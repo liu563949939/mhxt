@@ -1,0 +1,87 @@
+<div>
+  <ul id="dtreeUser" class="dtree" data-id="0"" style=" width: 90%"></ul>
+</div>
+<div>
+  <button type="button" id="save" class="layui-btn" style="float:right;margin-right:20px;">保存</button>
+</div>
+<!--动态模板定义-->
+<script type="text/html" template lay-done="layui.data.done(d)">
+</script>
+
+<script>
+  layui.data.done = function (d) {
+    debugger
+    var sParam = d.params,
+      roleId = sParam.roleId;
+    layui.use([], function () {
+      var $ = layui.jquery,
+        config = layui.setter,
+        dtree = layui.dtree,
+        global = layui.global;
+
+      //***1.变量定义***
+      var url = config.datamanage.url; //后端请求地址
+
+      //***2.方法定义***
+      var active = {
+        userTreeInit: function () {
+          dtree.render({
+            //1.基本设置
+            elem: '#dtreeUser',
+            method: 'post',
+            url: url + 'user/queryAll', // 使用url加载（可与data加载同时存在）
+            //2.异步设置
+            dataStyle: 'layuiStyle', //配置layui风格的数据格式
+            dataFormat: 'list', //配置data风格为list
+            request: { roleId: roleId },
+            checkbar: true, //复选框
+            response: { statusName: 'code', statusCode: 0, message: 'msg', treeId: 'jlbh', parentId: 'parentId', title: 'name' },
+
+            //3.显示设置
+            ficon: [1, -1],
+            icon: 1,
+
+            //4.回调函数
+            done: function (res, $obj) {
+              debugger
+            }
+
+          })
+        }
+      }
+
+
+      //******3.初始化******
+      active.userTreeInit();
+
+
+      //******4.事件监听******
+      $('#save').on('click', function () {
+        //1.先删除该角色对应的用户关联信息
+        var sParam = {};
+        sParam.url = 'userRole/del',
+          sParam.method = 'post',
+          sParam.entity = { roleId: roleId },
+          sParam.callback = function () {
+            //2.保存所有选中的节点信息
+            var param = dtree.getCheckbarNodesParam('dtreeUser');
+            for (var i = 0; i < param.length; i++) {
+              //新增关联信息
+              var sParam = {};
+              sParam.url = 'userRole/save';
+              sParam.method = 'post';
+              sParam.entity = {};
+              sParam.entity.userId = param[i].nodeId;
+              sParam.entity.roleId = roleId;
+              global.commonAdd(sParam);
+            }
+            //3.关闭弹窗
+            layer.closeAll();
+          };
+        global.commonDel(sParam);
+      })
+    })
+  }
+
+
+</script>

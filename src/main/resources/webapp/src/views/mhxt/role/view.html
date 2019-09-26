@@ -1,0 +1,56 @@
+<div>
+    <div class="layui-form" lay-filter="layuiadmin-app-form-list" style="padding: 20px 30px 0 0;">
+        <!--jlbh(隐藏)-->
+        <div class="layui-form-item">
+            <div class="layui-input-inline">
+                <input type="hidden" id="pop_jlbh" name="jlbh" placeholder="记录编号" autocomplete="off" class="layui-input">
+            </div>
+            <div class="layui-input-inline">
+                <input type="hidden" id="pop_parentId" name="parentId" placeholder="父编号" autocomplete="off"
+                    class="layui-input">
+            </div>
+        </div>
+
+        <!--姓名和登记时间-->
+        <div class="layui-form-item">
+            <label class="layui-form-label"><span style="color: red;">*</span>角色名称</label>
+            <div class="layui-input-inline">
+                <input type="text" id="pop_name" name="name" lay-verify="required" placeholder="请输入角色名称" autocomplete="off"
+                    class="layui-input">
+            </div>
+            <label class="layui-form-label"><span style="color: red;">*</span>登记时间</label>
+            <div class="layui-input-inline">
+                <input type="text" id="pop_createTime" name="createTime" lay-verify="required" placeholder="请输入登记时间"
+                    autocomplete="off" class="layui-input">
+            </div>
+        </div>
+
+        <!--提交按钮-->
+        <div class="layui-form-item">
+            <label class="layui-form-label"></label>
+            <input type="button" lay-submit lay-filter="form-submit-unit" value="确认" class="layui-btn"
+                style="float:right;margin-right: 10px; ">
+        </div>
+    </div>
+</div>
+
+<!--动态模板定义-->
+<script type="text/html" template lay-done="layui.data.done(d)">
+</script>
+
+<script>
+    layui.data.done = function (d) {
+        var sParam = d.params;
+        layui.use(['global', 'form'], function () {
+            var $ = layui.jquery,
+                form = layui.form,
+                global = layui.global;
+
+            //2.赋初值(普通字段)
+            $('#pop_jlbh').val(sParam.jlbh);
+            $('#pop_parentId').val(sParam.parentId);
+            $('#pop_name').val(sParam.name);
+            $('#pop_createTime').val(sParam.createTime);
+        })
+    }
+</script>

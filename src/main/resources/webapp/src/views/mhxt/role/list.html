@@ -1,0 +1,457 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <title>角色管理</title>
+    <link rel="stylesheet" href="/assets/css/layui.css">
+    <link rel="stylesheet" href="/assets/extends/dtree/dtree.css">
+    <link rel="stylesheet" href="/assets/extends/dtree/font/dtreefont.css">
+</head>
+
+<body>
+    <div class="layui-fluid">
+        <div class="layui-card">
+            <!--左边角色树-->
+            <div id='role' style="width:20%;float: left;background-color: #f2f2f2">
+                <ul id="dtreeRole" class="dtree" data-id="0" style="width:90%;"></ul>
+            </div>
+            <!--右侧操作区-->
+            <div id='roleUser' style="width:80%;float:right">
+                <!--上操作区-->
+                <div style="height:15%">
+                    <form class='layui-form' style="height: 100%">
+                        <div class="layui-form-item">
+                            <div class="layui-input-block" style="margin-top: 10px">
+                                <button type="button" lay-submit class="layui-btn layui-btn-radius layui-btn-sm"
+                                    lay-filter='add'>添加角色</button>
+                                <button type="button" lay-submit class="layui-btn layui-btn-radius layui-btn-sm"
+                                    lay-filter='modify'>修改角色</button>
+                                <button type="button" lay-submit class="layui-btn layui-btn-radius layui-btn-sm"
+                                    lay-filter='delete'>删除角色</button>
+                            </div>
+                        </div>
+                        <!--角色名称和创建时间-->
+                        <div class="layui-form-item">
+                            <label class="layui-form-label"><span style="color: red;">*</span>角色ID</label>
+                            <div class="layui-input-inline">
+                                <input type="text" id="jlbh" name="jlbh" placeholder="请输入角色ID" autocomplete="off"
+                                    class="layui-input">
+                            </div>
+                            <label class="layui-form-label"><span style="color: red;">*</span>角色名称</label>
+                            <div class="layui-input-inline">
+                                <input type="text" id="name" name="name" placeholder="请输入角色名称" autocomplete="off"
+                                    class="layui-input">
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                <!--下操作区-->
+                <div class="layui-tab" lay-filter='roleTab' style="height:85%">
+                    <ul class="layui-tab-title">
+                        <li class="layui-this" lay-id='roleUser'>关联用户</li>
+                        <li>关联资源</li>
+                    </ul>
+                    <div class="layui-tab-content">
+                        <div class="layui-tab-item layui-show">
+                            <table class="layui-hide" id="table-roleUser" lay-filter="table-roleUser"></table>
+                        </div>
+
+                        <div class="layui-tab-item">
+                            <table class="layui-hide" id="table-roleModule" lay-filter="table-roleModule"></table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+
+
+
+    <!--头工具栏(角色关联用户)-->
+    <script type="text/html" id="toolbarUser">
+        <div class="layui-btn-container">
+            <button class="layui-btn layui-btn-sm" lay-event="insert">关联用户</button>
+        </div>
+    </script>
+
+    <!--头工具栏(角色关联资源)-->
+    <script type="text/html" id="toolbarModule">
+        <div class="layui-btn-container">
+            <button class="layui-btn layui-btn-sm" lay-event="insert">关联资源</button>
+        </div>
+    </script>
+
+    <!--行工具栏-->
+    <script type="text/html" id="barUser">
+        <a class="layui-btn layui-btn-xs" lay-event="edit">编辑</a>
+        <a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="del">删除</a>
+    </script>
+
+
+    <script src="/assets/layui.js"></script>
+    <script>
+        layui.extend({
+            core: '{/}/assets/core/index', //核心模块
+            exd: '{/}/assets/extends/extend' //扩展模块
+        }).use(['layer', 'table', 'jquery', 'form', 'core', 'exd'], function () {
+            var $ = layui.jquery,
+                layer = layui.layer,
+                table = layui.table,
+                form = layui.form,
+                admin = layui.admin,
+                config = layui.setter,
+                global = layui.global,
+                dictpl = layui.dictpl,
+                dtree = layui.dtree,
+                element = layui.element;
+
+
+            //***1.变量定义***
+            var url = config.datamanage.url; //后端请求地址
+
+
+            //***2.方法定义***
+            var active = {
+                //******(1)左边角色树******
+                //1.角色-加载树
+                roleTreeInit: function () {
+                    dtree.render({
+                        //1.基本设置
+                        elem: "#dtreeRole",
+                        method: 'post',
+                        url: url + 'role/query', // 使用url加载（可与data加载同时存在）
+                        //2.异步设置
+                        dataStyle: 'layuiStyle', //配置layui风格的数据格式
+                        dataFormat: "list", //配置data风格为list
+                        checkbar: true, //复选框
+                        request: { name: '0' },
+                        response: { statusName: "code", statusCode: 0, message: 'msg', treeId: "jlbh", parentId: 'parentId', title: 'name' },
+
+                        //3.显示设置
+                        ficon: [1, -1],
+                        icon: 7,
+
+                        //4.回调函数
+                        done: function (res, $obj) {
+                            debugger
+                        }
+
+                    });
+                },
+
+                //2.角色-登记修改
+                pop: function (data) {
+                    var sparam = {};
+                    sparam.title = '角色登记'; //标题
+                    sparam.width = '800px'; //宽度
+                    sparam.height = '480px'; //高度
+                    sparam.id = 'role1'; //内容div的id
+                    sparam.view = '../view'; //加载的页面路径
+                    sparam.url = 'role/save';
+                    sparam.data = data; //传入弹出层的参数
+                    sparam.button = 'form-submit-unit'; //按钮
+                    global.pop(sparam);
+                },
+
+
+                //******(2)角色关联用户******
+                //1.表格加载-角色关联用户
+                tableInit_roleUser: function () {
+                    table.render({
+                        //(1)基本设置
+                        elem: '#table-roleUser',
+                        height: 'full-200',
+                        toolbar: '#toolbarUser',
+
+                        //(2)异步请求
+                        method: 'post',
+                        url: url + 'userRolePo/query',
+                        contentType: "application/json",
+                        where: { 'jlbh': '0' },
+                        page: true,
+                        limit: 10,
+                        request: {
+                            pageName: "page",
+                            limitName: "limit"
+                        },
+                        parseData: function (res) {
+                            return {
+                                code: res.code,
+                                msg: res.message,
+                                count: res.count,
+                                data: res.data
+                            }
+                        },
+                        //(3)表头设置
+                        cols: [[
+                            { type: 'checkbox' },
+                            { field: 'jlbh', title: '记录编号', hide: true },
+                            // { field: 'type', title: '类别', templet: '<div> {{# var fn = ' + dictpl.render('资料类型') + ' }} {{ fn(d.type) }} </div>' },
+                            { field: 'name', title: '用户姓名' },
+                            { field: 'createTime', title: '登记时间' },
+                            { title: '操作', toolbar: '#barUser' }
+                        ]],
+                    })
+                },
+
+                //2.表格重载-角色关联用户
+                tableRelaod_roleUser: function (sParam) {
+                    table.reload('table-roleUser', {
+                        where: sParam,
+                        page: {
+                            curr: 1
+                        }
+                    })
+                },
+
+                //3.角色关联用户
+                pop_roleUser: function (data) {
+                    var sparam = {};
+                    sparam.title = '角色关联用户'; //标题
+                    sparam.width = '480px'; //宽度
+                    sparam.height = '680px'; //高度
+                    sparam.id = 'roleUser1'; //内容div的id
+                    sparam.view = '../../public/pick_user'; //加载的页面路径
+                    sparam.url = '';
+                    sparam.data = data; //传入弹出层的参数
+                    sparam.button = 'form-submit-unit'; //按钮
+                    global.pop(sparam);
+                },
+
+
+
+                //******(3)角色关联模块******
+                //1.表格加载-角色关联模块
+                tableInit_roleModule: function () {
+                    table.render({
+                        //(1)基本设置
+                        elem: '#table-roleModule',
+                        height: 'full-200',
+                        toolbar: '#toolbarModule',
+
+                        //(2)异步请求
+                        method: 'post',
+                        url: url + 'roleModulePo/query',
+                        contentType: "application/json",
+                        where: { 'jlbh': '0' },
+                        page: true,
+                        limit: 10,
+                        request: {
+                            pageName: "page",
+                            limitName: "limit"
+                        },
+                        parseData: function (res) {
+                            return {
+                                code: res.code,
+                                msg: res.message,
+                                count: res.count,
+                                data: res.data
+                            }
+                        },
+                        //(3)表头设置
+                        cols: [[
+                            { type: 'checkbox' },
+                            { field: 'jlbh', title: '记录编号', hide: true },
+                            // { field: 'type', title: '类别', templet: '<div> {{# var fn = ' + dictpl.render('资料类型') + ' }} {{ fn(d.type) }} </div>' },
+                            { field: 'roleId', title: '角色ID', hide: true },
+                            { field: 'resourceId', title: '模块ID', hide: true },
+                            { field: 'name', title: '模块名称' },
+                            { field: 'url', title: '模块路径' },
+                            { field: 'createTime', title: '登记时间' },
+                            { title: '操作', toolbar: '#barUser' }
+                        ]],
+                    })
+                },
+
+                //2.表格重载-角色关联模块
+                tableRelaod_roleModule: function (sParam) {
+                    table.reload('table-roleModule', {
+                        where: sParam,
+                        page: {
+                            curr: 1
+                        }
+                    })
+                },
+
+                //3.角色关联模块
+                pop_roleModule: function (data) {
+                    var sparam = {};
+                    sparam.title = '角色关联资源';
+                    sparam.width = '480px';
+                    sparam.height = '680px';
+                    sparam.id = 'roleModule';
+                    sparam.view = '../../public/pick_module';
+                    sparam.data = data;
+                    sparam.button = 'form-submit-unit';
+                    global.pop(sparam);
+                },
+
+
+            }
+
+
+
+            //******3.初始化******
+            active.roleTreeInit(); // 角色树--初始化
+            active.tableInit_roleUser(); //角色关联用户--初始化
+            active.tableInit_roleModule(); //角色关联模块--初始化
+
+            $('#role').css({ height: '800px', background: '#f8f8f8' });
+            $('#roleUser').css({ height: '800px', background: '#f8f8f8' });
+
+
+            //******4.事件监听******
+            //******(1)角色树监听******
+            //1.监听角色树节点
+            dtree.on("node('dtreeRole')", function (obj) {
+                var param = obj.param;
+                $('#jlbh').val(param.nodeId); //记录编号
+                $('#name').val(param.context); //角色名称
+                //分页切换
+                element.tabChange('roleTab', 'roleUser');
+            });
+
+
+            //******(2)角色按钮监听******
+            //1.添加角色
+            form.on('submit(add)', function (data) {
+                var param = {};
+                param.parentId = data.field.jlbh; //父编号
+                active.pop(param); //登记修改
+            })
+
+            //2.修改角色
+            form.on('submit(modify)', function (data) {
+                //0.条件判断
+                var jlbh = data.field.jlbh;
+                if (jlbh == null || jlbh == '') {
+                    layer.msg('请先选择角色！');
+                    return;
+                }
+                //1.查询记录
+                var param = {};
+                param.url = 'role/queryById';
+                param.condition = { jlbh: jlbh };
+                param.type = 'dic';
+                param.callback = function (sParam) {
+                    //2.更新记录
+                    var jlbh = sParam.data.jlbh;
+                    if (jlbh != null && jlbh != '') {
+                        active.pop(sParam.data);
+                    }
+                }
+                global.commonQuery(param)
+            })
+
+            //3.删除角色
+            form.on('submit(delete)', function () {
+                var roleId = $('#jlbh').val();
+                if (roleId == '') {
+                    layer.msg('请先选择角色！');
+                    return
+                } else {
+                    var param = {};
+                    param.url = 'role/delById';
+                    param.method = 'post';
+                    param.entity = { jlbh: roleId };
+                    param.callback = function () {
+                        layer.msg('删除成功！')
+                    }
+                    global.commonDel(param);
+                }
+            })
+
+            //******(3)tab监听******
+            //1.监听tab分页
+            element.on('tab(roleTab)', function (data) {
+                var index = data.index;
+                var roleId = $('#jlbh').val();
+                if (roleId == '') {
+                    roleId = '0';
+                }
+                if (data.index == 0) {
+                    active.tableRelaod_roleUser({ jlbh: roleId })
+                } else {
+                    if (data.index == 1) {
+                        active.tableRelaod_roleModule({ jlbh: roleId });
+                    }
+                }
+            })
+
+            //******(4)监听角色关联信息******
+            //1.1.监听行工具栏
+            table.on('tool(table-userTable)', function (obj) {
+                var sEvent = obj.event;
+                if (sEvent == 'edit') {
+                    active.pop(obj.data);
+                } else if (sEvent == 'del') {
+                    debugger
+                    var sparam = {};
+                    sparam.url = 'user/del',
+                        sparam.method = 'post',
+                        sparam.entity = { jlbh: obj.data.jlbh },
+                        //定义删除回调函数
+                        sparam.callback = function () {
+                            debugger
+                            layer.closeAll();
+                            active.tableRelaod({});
+                        }
+                    //删除提示
+                    layer.open({
+                        content: '您确定删除此纪录吗？',
+                        btn: ['确定', '取消'],
+                        yes: function (index, layero) {
+                            global.commonDel(sparam);
+                        }
+                    })
+                }
+            })
+
+            //1.2.头工具栏---角色关联用户
+            table.on('toolbar(table-roleUser)', function (obj) {
+                debugger
+                switch (obj.event) {
+                    case 'insert':
+                        //1.角色判断
+                        var roleId = $('#jlbh').val();
+                        if (roleId == null || roleId == '') {
+                            layer.msg('请选择角色！');
+                            return;
+                        } else {
+                            active.pop_roleUser({ roleId: roleId });
+                        }
+
+                };
+            })
+
+            //1.3.头工具栏---角色关联模块
+            table.on('toolbar(table-roleModule)', function (obj) {
+                debugger
+                switch (obj.event) {
+                    case 'insert':
+                        //1.角色判断
+                        var roleId = $('#jlbh').val();
+                        if (roleId == null || roleId == '') {
+                            layer.msg('请选择角色！');
+                            return;
+                        } else {
+                            active.pop_roleModule({ roleId: roleId });
+                        }
+                }
+            })
+
+            //4.清空
+            form.on('submit(clear)', function (data) {
+                var sCondition = layui.jutil.empty(data.field);
+                form.val("query-userdTable", sCondition);
+                active.tableRelaod(sCondition);
+            })
+
+        });
+    </script>
+</body>
+
+</html>

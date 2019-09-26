@@ -1,0 +1,17 @@
+{
+  "name": "datamanage",
+  "version": "1.0.0",
+  "description": "",
+  "main": "gulpfile.js",
+  "dependencies": {
+    "minimist": "^1.2.0"
+  },
+  "devDependencies": {
+    "del": "^5.0.0",
+    "gulp": "^3.9.1",
+    "gulp-connect": "^5.7.0"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC"
+}

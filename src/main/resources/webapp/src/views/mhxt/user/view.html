@@ -1,0 +1,83 @@
+<div>
+    <div class="layui-form" lay-filter="layuiadmin-app-form-list" style="padding: 20px 30px 0 0;">
+        <!--jlbh(隐藏)-->
+        <div class="layui-form-item">
+            <div class="layui-input-inline">
+                <input type="hidden" id="jlbh" name="jlbh" placeholder="记录编号" autocomplete="off" class="layui-input">
+            </div>
+        </div>
+
+        <!--姓名和登记时间-->
+        <div class="layui-form-item">
+            <label class="layui-form-label"><span style="color: red;">*</span>姓名</label>
+            <div class="layui-input-inline">
+                <input type="text" id="name" name="name" lay-verify="required" placeholder="请输入姓名" autocomplete="off"
+                    class="layui-input">
+            </div>
+            <label class="layui-form-label"><span style="color: red;">*</span>登记时间</label>
+            <div class="layui-input-inline">
+                <input type="text" id="createTime" name="createTime" lay-verify="required" placeholder="请输入登记时间"
+                    autocomplete="off" class="layui-input">
+            </div>
+        </div>
+
+        <!--用户名和密码-->
+        <div class="layui-form-item">
+            <label class="layui-form-label"><span style="color: red;">*</span>用户名</label>
+            <div class="layui-input-inline">
+                <input type="text" id="username" name="username" lay-verify="required" placeholder="请输入用户名"
+                    autocomplete="off" class="layui-input">
+            </div>
+            <label class="layui-form-label"><span style="color: red;">*</span>密码</label>
+            <div class="layui-input-inline">
+                <input type="text" id="password" name="password" lay-verify="required" placeholder="请输入密码"
+                    autocomplete="off" class="layui-input">
+            </div>
+        </div>
+
+        <!--单位id和单位编码-->
+        <div class="layui-form-item">
+            <label class="layui-form-label"><span style="color: red;">*</span>单位ID</label>
+            <div class="layui-input-inline">
+                <input type="text" id="unitId" name="unitId" lay-verify="required" placeholder="请输入单位ID"
+                    autocomplete="off" class="layui-input">
+            </div>
+            <label class="layui-form-label"><span style="color: red;">*</span>单位编码</label>
+            <div class="layui-input-inline">
+                <input type="text" id="unitCode" name="unitCode" lay-verify="required" placeholder="请输入单位编码"
+                    autocomplete="off" class="layui-input">
+            </div>
+        </div>
+
+        <!--提交按钮-->
+        <div class="layui-form-item">
+            <label class="layui-form-label"></label>
+            <input type="button" lay-submit lay-filter="form-submit-unit" value="确认" class="layui-btn"
+                style="float:right;margin-right: 10px; ">
+        </div>
+    </div>
+</div>
+
+<!--动态模板定义-->
+<script type="text/html" template lay-done="layui.data.done(d)">
+</script>
+
+<script>
+    layui.data.done = function (d) {
+        var sParam = d.params;
+        layui.use(['global', 'form'], function () {
+            var $ = layui.jquery,
+                form = layui.form,
+                global = layui.global;
+            
+            //2.赋初值(普通字段)
+            $('#jlbh').val(sParam.jlbh);
+            $('#name').val(sParam.name);
+            $('#createTime').val(sParam.createTime);
+            $('#username').val(sParam.username);
+            $('#password').val(sParam.password);
+            $('#unitId').val(sParam.unitId);
+            $('#unitCode').val(sParam.unitCode);
+        })
+    }
+</script>
