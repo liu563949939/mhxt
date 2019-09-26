@@ -2,3 +2,4 @@ target
 test
 node_modules
 dist
+.idea

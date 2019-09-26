@@ -65,8 +65,8 @@
             debugger
             //数据模拟
             var data = [];
-            data.push({name:'菜单一'});
-            data.push({name:'菜单二'});
+            data.push({name:'菜单一',children:[{name:''}]});
+            data.push({name:'菜单二1'});
             //读取菜单
             var x = '';
             for(i=0;i<data.length;i++){
