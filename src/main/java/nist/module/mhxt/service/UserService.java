@@ -1,5 +1,6 @@
 package nist.module.mhxt.service;
 
+import nist.module.mhxt.entity.ModuleEntity;
 import nist.module.mhxt.entity.UserEntity;
 import nist.module.mhxt.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -98,9 +99,42 @@ public class UserService {
         return sFhz;
     }
 
-
     //6.根据用户名和密码查找
     public List<UserEntity> findByName(UserEntity userEntity){
         return userRepository.findByName(userEntity);
+    }
+
+    //7.根据用户名查找对应得模块
+    public List<ModuleEntity> findModuleByUserId(UserEntity userEntity){
+        //1.条件处理
+        StringBuilder sCondition = new StringBuilder("select * from s_module where 1=1");
+        String userId = userEntity.getJlbh();
+        if(userId != null && !"".equals(userId)){
+            sCondition.append(" and parentId = '1'");
+        }
+        //2.语句执行
+        Query query = entityManager.createNativeQuery(sCondition.toString(),ModuleEntity.class);
+        List<ModuleEntity> dataList = query.getResultList();
+        for(int i=0;i<dataList.size();i++){
+            String moduleId = dataList.get(i).getJlbh();
+            //获取子模块
+            dataList.get(i).setChildren(this.getModuleById(moduleId));
+        }
+        //3.语句返回
+        return dataList;
+    }
+
+    //7-1.根据父moduleId返回子模块列表
+    public List<ModuleEntity> getModuleById(String moduleId){
+        //1.条件处理
+        StringBuilder sCondition = new StringBuilder("select * from s_module where 1=1");
+        if(!"".equals(moduleId)){
+            sCondition.append(" and parentId = '" + moduleId + "'");
+        }
+        //2.语句执行
+        Query query = entityManager.createNativeQuery(sCondition.toString(),ModuleEntity.class);
+        List<ModuleEntity> dataList = query.getResultList();
+        //3.语句返回
+        return  dataList;
     }
 }

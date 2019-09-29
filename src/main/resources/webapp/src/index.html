@@ -39,8 +39,8 @@
                     <img src="assets/images/logo.png" alt="" />
                     <h1>通用后台管理系统</h1>
                 </div>
-                <ul id="Nav" class="layui-nav layui-nav-tree">
-                    <li class="layui-nav-item">
+                <ul id="Nav" lay-filter="moduleNav" class="layui-nav layui-nav-tree">
+                    <!-- <li class="layui-nav-item">
                         <a href="javascript:;">
                             <i class="layui-icon">&#xe609;</i>
                             <em>主页</em>
@@ -60,7 +60,7 @@
                             <dd><a href="views/mhxt/module/list.html">资源管理</a></dd>
                             <dd><a href="views/users.html">字典管理</a></dd>
                         </dl>
-                    </li>
+                    </li> -->
                 </ul>
             </div>
         </div>
@@ -81,6 +81,7 @@
 
     <script src="assets/layui.js"></script>
     <script src="index.js" data-main="home"></script>
+    
 </body>
 
 </html>
