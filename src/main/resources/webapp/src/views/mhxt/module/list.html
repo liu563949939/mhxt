@@ -35,18 +35,18 @@
                         <div class="layui-form-item">
                             <label class="layui-form-label"><span style="color: red;">*</span>模块ID</label>
                             <div class="layui-input-inline">
-                                <input type="text" id="jlbh" name="jlbh" placeholder="请输入模块ID" autocomplete="off"
-                                    class="layui-input">
+                                <input type="text" id="jlbh" name="jlbh" readonly="readonly" placeholder="请输入模块ID"
+                                    autocomplete="off" class="layui-input">
                             </div>
                             <label class="layui-form-label"><span style="color: red;">*</span>模块名称</label>
                             <div class="layui-input-inline">
-                                <input type="text" id="name" name="name" placeholder="请输入模块名称" autocomplete="off"
-                                    class="layui-input">
+                                <input type="text" id="name" name="name" readonly="readonly" placeholder="请输入模块名称"
+                                    autocomplete="off" class="layui-input">
                             </div>
                             <label class="layui-form-label"><span style="color: red;">*</span>模块路径</label>
-                            <div class="layui-input-inline">
-                                <input type="text" id="url" name="url" placeholder="请输入模块路径" autocomplete="off"
-                                    class="layui-input">
+                            <div class="layui-input-inline" style="width: 300px;">
+                                <input type="text" id="url" name="url" readonly="readonly" placeholder="请输入模块路径"
+                                    autocomplete="off" class="layui-input">
                             </div>
                         </div>
                     </form>
@@ -99,15 +99,14 @@
                     dtree.render({
                         //1.基本设置
                         elem: "#dtreeModule",
+                        url: url + "module/queryAllNoChildren", // 使用url加载（可与data加载同时存在）
                         method: "post",
-                        url: url + "module/queryAll", // 使用url加载（可与data加载同时存在）
                         //2.异步设置
                         dataStyle: "layuiStyle", //配置layui风格的数据格式
                         dataFormat: "list", //配置data风格为list
                         checkbar: true, //复选框
                         request: {},
                         response: { statusName: "code", statusCode: 0, message: "msg", treeId: "jlbh", parentId: "parentId", title: "name", basicData: "url" },
-
                         //3.显示设置
                         ficon: [1, -1],
                         icon: 7,
@@ -144,7 +143,7 @@
 
                         //(2)异步请求
                         method: "post",
-                        url: url + "moduleRole/query",
+                        url: url + "roleModulePo/queryByModuleId",
                         contentType: "application/json",
                         where: { 'jlbh': '0' },
                         page: true,
@@ -196,16 +195,23 @@
             //******4.事件监听******
             //1.监听模块树节点
             dtree.on("node('dtreeModule')", function (obj) {
-                debugger
-                var param = obj.param;
-                $('#jlbh').val(param.nodeId); //记录编号
-                $("#name").val(param.context); //记录编号
-                var str = param.basicData; //使用正则表达式进行替换，模式需要指定为g，表示检索全局
-                var reg = /"/g;
-                str = str.replace(reg, '');
-                $("#url").val(str); //模块名称
-                var condition = { jlbh: param.nodeId };
-                active.tableRelaod_moduleRole(condition);
+                //1.查询记录
+                var moduleId = obj.param.nodeId; //模块编号
+                var param = {};
+                param.url = 'module/queryById';
+                param.condition = { jlbh: moduleId };
+                param.type = 'dic';
+                param.callback = function (sParam) {
+                    var userInfo = sParam.data;
+                    //2.展示信息
+                    $('#jlbh').val(userInfo.jlbh); //模块编号
+                    $("#name").val(userInfo.name); //模块名称
+                    $('#url').val(userInfo.url); //模块地址
+                    //3.列表展示
+                    var condition = { jlbh: moduleId };
+                    active.tableRelaod_moduleRole(condition);
+                }
+                global.commonQuery(param)
             });
 
             //2-1.添加资源
@@ -224,13 +230,13 @@
                 //1.查询记录
                 var param = {};
                 param.url = 'module/queryById';
-                param.condition = {'jlbh':jlbh};
+                param.condition = { 'jlbh': jlbh };
                 param.type = 'dic';
-                param.callback =  function (sParam) {
+                param.callback = function (sParam) {
                     //2.修改记录
                     debugger
                     var sjlbh = sParam.data.jlbh;
-                    if(sjlbh != null && sjlbh != ''){
+                    if (sjlbh != null && sjlbh != '') {
                         active.pop(sParam.data);
                     }
                 }
@@ -238,7 +244,7 @@
             })
 
             //2-3.删除资源
-            form.on('submit(delete)',function (data) {
+            form.on('submit(delete)', function (data) {
                 debugger
                 var param = {};
                 param.url = 'module/delete';

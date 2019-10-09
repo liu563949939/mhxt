@@ -1,5 +1,6 @@
 package nist.module.mhxt.controller.po;
 
+import nist.module.mhxt.entity.ModuleEntity;
 import nist.module.mhxt.entity.RoleEntity;
 import nist.module.mhxt.service.po.RoleModulePoService;
 import nist.module.mhxt.util.ResponseUtil;
@@ -19,15 +20,17 @@ public class RoleModulePoController {
     @Autowired
     private RoleModulePoService roleModulePoService;
 
+    //1.根据角色找资源
     @RequestMapping(value = "/query", method = {RequestMethod.GET, RequestMethod.POST})
     public String Query(@RequestBody RoleEntity roleEntity){
         Map<String,Object> result = roleModulePoService.getDataList(roleEntity);
         return ResponseUtil.writer("0","success",result.get("dataList"),(Long) result.get("count"));
     }
 
- /*   @RequestMapping(value = "/queryRole", method = {RequestMethod.GET, RequestMethod.POST})
+    //2.根据资源找角色
+    @RequestMapping(value = "/queryByModuleId", method = {RequestMethod.GET, RequestMethod.POST})
     public String Query(@RequestBody ModuleEntity moduleEntity){
-        Map<String,Object> result = roleModulePoService.getDataList_role(moduleEntity);
+        Map<String,Object> result = roleModulePoService.getDataListByModuleId(moduleEntity);
         return ResponseUtil.writer("0","success",result.get("dataList"),(Long) result.get("count"));
-    }*/
+    }
 }

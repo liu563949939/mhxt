@@ -20,14 +20,20 @@ public class ModuleController {
     @Autowired
     private ModuleService moduleService;
 
-    //1-1.查询所有
+    //1-1.查询所有(判断子节点)
     @RequestMapping(value = "/queryAll", method = {RequestMethod.GET, RequestMethod.POST})
     public String getDataListAll(@Param("roleId") String roleId){
-        List<ModuleEntity> dataList = moduleService.getDataListAll(roleId);
+        List<ModuleEntity> dataList = moduleService.getDataListAll(roleId,"yes");
         return ResponseUtil.writer("0","success",dataList);
     }
 
-    //1-2.分页查询
+    //1-2.查询所有(不判断子节点)
+    @RequestMapping(value = "/queryAllNoChildren", method = {RequestMethod.GET, RequestMethod.POST})
+    public String getDataListAllNoChildren(@Param("roleId") String roleId){
+        List<ModuleEntity> dataList = moduleService.getDataListAll(roleId,"no");
+        return ResponseUtil.writer("0","success",dataList);
+    }
+
     //1-3.根据jlbh查询
     @RequestMapping(value = "/queryById", method = {RequestMethod.GET, RequestMethod.POST})
     public String getDataListById(@RequestBody ModuleEntity moduleEntity){

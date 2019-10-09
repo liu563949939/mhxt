@@ -25,7 +25,7 @@ public class UserRolePoService {
 
         if(roleEntity.getJlbh() != null && !roleEntity.getJlbh().equals("")){
             sCondition.append(" and roleId = '" + roleEntity.getJlbh() + "'");
-            sConditionCount.append(" and roleId = " + roleEntity.getJlbh());
+            sConditionCount.append(" and roleId = '" + roleEntity.getJlbh() + "'");
         }
 
         Integer iStart = (roleEntity.getPage()-1)*roleEntity.getLimit() + 1; //开始

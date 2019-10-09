@@ -5,7 +5,6 @@
  *
 **/
 (function () {
-    debugger
     var entry,
         // 配置所有应用的入口文件，程序将会按照data-main属性中设置的值进行索引查找
         // 如果你在引入此脚本的script标签上没有设置data-main属性，程序将会默认访问home.js文件
@@ -15,7 +14,6 @@
         };
 
     (function () {
-        debugger
         var dataMain, scripts = document.getElementsByTagName('script'),
             eachScripts = function (el) {
                 dataMain = el.getAttribute('data-main');
@@ -35,79 +33,61 @@
         core: "{/}/assets/core/index", //核心模块
         exd: "{/}/assets/extends/extend" //扩展模块
     }).use(["layer", "table", "jquery", "form", 'core', 'exd'], function () {
-        debugger
         var $ = layui.jquery,
-            element = layui.element,
             global = layui.global;
-        // layui.data('test', {
-        //     key: 'nickname',
-        //     value: 'ABC'
-        // });
 
-        // layui.sessionData('test', {
-        //     key: 'nickname',
-        //     value: '555'
-        // });
+        //1.获取session
+        var login = layui.sessionData('login'),
+            userInfo = login.userInfo;
+        if (userInfo != undefined && login != null) {
+            var userId = userInfo[0].userId,
+                unitCode = userInfo[1].unitCode,
+                name = userInfo[2].name;
+        }
 
-        //1.判断用户是否已登陆，如未登录跳转到登录页面
-        var localTest = layui.sessionData('login');
-        var username = localTest.username;
 
-        //1.1判断是从哪个页面来的
+
+        //2.判断是否为登陆页面，如是，则清除session
         if (entry != 'login') {
-            if (username == null || username == undefined || username == '') {
+            if (userId == null || userId == undefined || userId == '') {
                 window.location.href = "./login.html";
+            } else {
+                //通过ajax请求获得后台数据
+                var param = {};
+                param.url = 'user/findModuleByUserId';
+                param.condition = { jlbh: userId };
+                param.type = 'dic';
+                param.callback = function (sParam) {
+                    debugger
+                    //1.菜单信息展示
+                    $('#Nav').empty();
+                    var x = active.readMenu(sParam.data);
+                    $('#Nav').append(x);
+                    //2.用户信息展示
+                    $('#user').text('当前用户【' + name + '】' + ', 【' + unitCode + '】');
+                    //3.菜单刷新控制
+                    layui.config({
+                        base: 'assets/lay/modules/'
+                    }).extend(app).use(entry || 'home');
+                }
+                global.commonQuery(param);
             }
+        } else {
+            //清空session值
+            layui.sessionData('login', null);
         }
 
-        if (username != "") {
-            //1.通过ajax请求获得后台数据
-            var param = {};
-            param.url = 'user/findModuleByUserId';
-            param.condition = { jlbh: '111' };
-            param.type = 'dic';
-            param.callback = function (sParam) {
-                debugger
-                var x = active.readMenu(sParam.data);
-                // $('#Nav').empty();
-
-                // var aa = '<li class="layui-nav-item">' +
-                //     '<a href="javascript:;">' +
-                //     '<i class="layui-icon">&#xe609;</i>' +
-                //     '<em>主页</em>' +
-                //     '</a>' +
-                //     '<dl class="layui-nav-child">' +
-                //     '<dd><a href="views/system/console.html">控制台</a></dd>' +
-                //     '</dl>' +
-                //     '</li>';
-
-                // $('#Nav').append(aa);
-                // element.init('nav','moduleNav');
-                var x = active.readMenu(sParam.data);
-                $('#Nav').append(x);
-
-                layui.config({
-                    base: 'assets/lay/modules/'
-                }).extend(app).use(entry || 'home',function(){
-                    debugger;
-
-                });
-            }
-            global.commonQuery(param);
-        }
-
-
+        //3.方法定义
         var active = {
             //1.读取菜单
             readMenu: function (data) {
-                //读取菜单
                 var x = '';
                 for (i = 0; i < data.length; i++) {
                     x = x + '<li class="layui-nav-item">' +
                         '<a href = "javascript:;" >' +
                         '<i class="layui-icon">&#xe857;</i>' +
                         '<em>' + data[i].name + '</em>' +
-                        '<span class="layui-nav-more"></span>'+
+                        '<span class="layui-nav-more"></span>' +
                         '</a >';
 
                     var y = '<dl class="layui-nav-child">';
@@ -116,23 +96,13 @@
                     }
 
                     y += '</dl>';
-                    x +=  y + '</li >';
+                    x += y + '</li >';
                 }
                 return x;
             }
         }
 
     })
-
-
-    // layui.config({
-    //     base: 'assets/lay/modules/'
-    // }).extend(app).use(entry || 'home',function(){
-    //     debugger;
-
-    // });
-
-
 
 
 })();

@@ -40,8 +40,9 @@
             global = layui.global,
             layer = layui.layer;
 
-        //2.事件监听
+        //用户登陆
         $('#login').on('click', function () {
+            var localTest = layui.sessionData('login');
             //1.变量定义
             var username = $('#username').val();
             var password = $('#password').val();
@@ -53,12 +54,18 @@
                 param.callback = function (sParam) {
                     var data = sParam.data;
                     if (data.length == 1) {
-                        var username = data[0].username;
-                        var password = data[0].password;
-                        //1.session赋值
+                        debugger
+                        var userId = data[0].jlbh,
+                            unitCode = data[0].unitCode,
+                            name = data[0].name;
+                        //session赋值
                         layui.sessionData('login', {
-                            key: 'username',
-                            value: username
+                            key: 'userInfo',
+                            value: [
+                                {userId: userId},
+                                {unitCode: unitCode},
+                                {name: name}
+                            ]
                         });
                         //2.页面跳转
                         window.location.href = "./index.html";

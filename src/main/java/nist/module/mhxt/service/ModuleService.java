@@ -23,7 +23,7 @@ public class ModuleService {
     private EntityManager entityManager;
 
     //1-1.query方法(所有)
-    public List<ModuleEntity> getDataListAll(String roleId){
+    public List<ModuleEntity> getDataListAll(String roleId,String type){
        //1.定义SQL
         String SQL = "select * From s_module";
         //2.语句执行
@@ -31,22 +31,25 @@ public class ModuleService {
         List<ModuleEntity> dataList = query.getResultList(); //查询结果
 
         //3.循环判断是否已授权给该角色
-        for (int i=0;i<dataList.size();i++){
-            String moduleId = dataList.get(i).getJlbh();
-            boolean isChecked = this.isChecked(roleId,moduleId);
-            if(isChecked){
-                dataList.get(i).setCheckArr("1");
-            }else{
-                dataList.get(i).setCheckArr("0");
+        if(type == "yes"){
+            for (int i=0;i<dataList.size();i++){
+                String moduleId = dataList.get(i).getJlbh();
+                boolean isChecked = this.isChecked(roleId,moduleId);
+                if(isChecked){
+                    dataList.get(i).setCheckArr("1");
+                }else{
+                    dataList.get(i).setCheckArr("0");
+                }
             }
         }
+
         //4.组织返回结果
         return dataList;
     }
 
     //1-2.分页查询
 
-    //1-3.分局JLBH查询
+    //1-3.根据JLBH查询
     public Object getDataListById(ModuleEntity moduleEntity){
         //1.条件判断
         StringBuilder sCondition = new StringBuilder("select * from s_module where 1 = 1");

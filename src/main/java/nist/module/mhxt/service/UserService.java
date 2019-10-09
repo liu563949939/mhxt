@@ -107,10 +107,14 @@ public class UserService {
     //7.根据用户名查找对应得模块
     public List<ModuleEntity> findModuleByUserId(UserEntity userEntity){
         //1.条件处理
-        StringBuilder sCondition = new StringBuilder("select * from s_module where 1=1");
         String userId = userEntity.getJlbh();
+        String publicSql = "and x.jlbh in (select distinct v.moduleid from s_role_module v where v.roleid in (select t.roleid From s_user_role t where t.userid = '" + userId + "'))"; //根据userId查找模块
+        StringBuilder sCondition = new StringBuilder("select * from s_module x where 1=1 ");
         if(userId != null && !"".equals(userId)){
+            sCondition.append(publicSql);
             sCondition.append(" and parentId = '1'");
+        }else{
+            return null;
         }
         //2.语句执行
         Query query = entityManager.createNativeQuery(sCondition.toString(),ModuleEntity.class);
@@ -118,17 +122,19 @@ public class UserService {
         for(int i=0;i<dataList.size();i++){
             String moduleId = dataList.get(i).getJlbh();
             //获取子模块
-            dataList.get(i).setChildren(this.getModuleById(moduleId));
+            dataList.get(i).setChildren(this.getModuleById(moduleId,publicSql));
         }
         //3.语句返回
         return dataList;
     }
 
+
     //7-1.根据父moduleId返回子模块列表
-    public List<ModuleEntity> getModuleById(String moduleId){
+    public List<ModuleEntity> getModuleById(String moduleId,String publicSql){
         //1.条件处理
-        StringBuilder sCondition = new StringBuilder("select * from s_module where 1=1");
+        StringBuilder sCondition = new StringBuilder("select * from s_module x where 1=1 ");
         if(!"".equals(moduleId)){
+            sCondition.append(publicSql);
             sCondition.append(" and parentId = '" + moduleId + "'");
         }
         //2.语句执行
