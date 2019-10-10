@@ -1,0 +1,356 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <title>字典管理</title>
+    <link rel="stylesheet" href="/assets/css/layui.css">
+    <link rel="stylesheet" href="/assets/extends/dtree/dtree.css">
+    <link rel="stylesheet" href="/assets/extends/dtree/font/dtreefont.css">
+</head>
+
+<body>
+    <div class="layui-fluid">
+        <div class="layui-card">
+            <!--左边角色树-->
+            <div id='dicNameLeft' style="width:20%;float: left;background-color: #f2f2f2">
+                <ul id="dtreeDicName" class="dtree" data-id="0" style="width:90%;"></ul>
+            </div>
+            <!--右侧操作区-->
+            <div id='dicNameRight' style="width:80%;float:right;">
+                <!--上操作区-->
+                <div style="height:15%">
+                    <form class='layui-form' style="height: 100%">
+                        <div class="layui-form-item">
+                            <div class="layui-input-block" style="margin-top: 10px">
+                                <button type="button" lay-submit class="layui-btn layui-btn-radius layui-btn-sm"
+                                    lay-filter='add'>添加字典</button>
+                                <button type="button" lay-submit class="layui-btn layui-btn-radius layui-btn-sm"
+                                    lay-filter='modify'>修改字典</button>
+                                <button type="button" lay-submit class="layui-btn layui-btn-radius layui-btn-sm"
+                                    lay-filter='delete'>删除字典</button>
+                            </div>
+                        </div>
+                        <div class="layui-form-item">
+                            <label class="layui-form-label"><span style="color: red;">*</span>记录编号</label>
+                            <div class="layui-input-inline" style="width:300px;">
+                                <input type="text" id="jlbh" name="jlbh" autocomplete="off" class="layui-input"
+                                    readonly="true">
+                            </div>
+                            <label class="layui-form-label"><span style="color: red;">*</span>字典名称</label>
+                            <div class="layui-input-inline" style="width:300px;">
+                                <input type="text" id="name" name="name" autocomplete="off" readonly="true"
+                                    class="layui-input">
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                <!--下操作区-->
+                <div class="layui-tab" lay-filter='itemTab' style="height:85%">
+                    <ul class="layui-tab-title">
+                        <li class="layui-this" lay-id='dicItem'>字典项</li>
+                    </ul>
+                    <div class="layui-tab-content">
+                        <div class="layui-tab-item layui-show">
+                            <table class="layui-hide" id="table-dicItem" lay-filter="table-dicItem"></table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+
+
+
+    <!--头工具栏(字典项)-->
+    <script type="text/html" id="toolbarDicItem">
+        <div class="layui-btn-container">
+            <button class="layui-btn layui-btn-sm" lay-event="insert">新增</button>
+        </div>
+    </script>
+
+    <!--行工具栏-->
+    <script type="text/html" id="barDicItem">
+        <a class="layui-btn layui-btn-xs" lay-event="edit">编辑</a>
+        <a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="del">删除</a>
+    </script>
+
+
+    <script src="/assets/layui.js"></script>
+    <script>
+        layui.extend({
+            core: '{/}/assets/core/index', //核心模块
+            exd: '{/}/assets/extends/extend' //扩展模块
+        }).use(['layer', 'table', 'jquery', 'form', 'core', 'exd'], function () {
+            var $ = layui.jquery,
+                layer = layui.layer,
+                table = layui.table,
+                form = layui.form,
+                admin = layui.admin,
+                config = layui.setter,
+                global = layui.global,
+                dictpl = layui.dictpl,
+                dtree = layui.dtree,
+                element = layui.element;
+
+
+            //***1.变量定义***
+            var url = config.datamanage.url; //后端请求地址
+
+
+            //***2.方法定义***
+            var active = {
+                //******(1)左边字典树******
+                //1.字典-加载树
+                dicNameTreeInit: function () {
+                    dtree.render({
+                        //1.基本设置
+                        elem: "#dtreeDicName",
+                        method: 'post',
+                        url: url + 'dicName/queryAll', // 使用url加载（可与data加载同时存在）
+                        //2.异步设置
+                        dataStyle: 'layuiStyle', //配置layui风格的数据格式
+                        dataFormat: "list", //配置data风格为list
+                        checkbar: true, //复选框
+                        request: {},
+                        response: { statusName: "code", statusCode: 0, message: 'msg', treeId: "jlbh", parentId: 'parentId', title: 'name' },
+
+                        //3.显示设置
+                        ficon: [1, -1],
+                        icon: 7,
+
+                        //4.回调函数
+                        done: function (res, $obj) {
+
+                        }
+
+                    });
+                },
+
+                //2.字典-登记修改
+                pop: function (data) {
+                    var sparam = {};
+                    sparam.title = '字典登记'; //标题
+                    sparam.width = '460px'; //宽度
+                    sparam.height = '360px'; //高度
+                    sparam.id = 'dicName1'; //内容div的id
+                    sparam.view = '../view'; //加载的页面路径
+                    sparam.url = 'dicName/save';
+                    sparam.data = data; //传入弹出层的参数
+                    sparam.button = 'form-submit-unit'; //按钮
+                    sparam.callback = function () {
+                        active.dicNameTreeInit();
+                    }
+                    global.pop(sparam);
+                },
+
+
+                //******(2)字段项******
+                //1.表格加载-角色关联用户
+                tableInit_dicItem: function () {
+                    table.render({
+                        //(1)基本设置
+                        elem: '#table-dicItem',
+                        height: 'full-200',
+                        toolbar: '#toolbarDicItem',
+
+                        //(2)异步请求
+                        method: 'post',
+                        url: url + 'dicItem/query',
+                        contentType: "application/json",
+                        where: { 'name': '0' },
+                        page: true,
+                        limit: 10,
+                        request: {
+                            pageName: "page",
+                            limitName: "limit"
+                        },
+                        parseData: function (res) {
+                            return {
+                                code: res.code,
+                                msg: res.message,
+                                count: res.count,
+                                data: res.data
+                            }
+                        },
+                        //(3)表头设置
+                        cols: [[
+                            { type: 'checkbox' },
+                            { field: 'jlbh', title: '记录编号', hide: true },
+                            // { field: 'type', title: '类别', templet: '<div> {{# var fn = ' + dictpl.render('资料类型') + ' }} {{ fn(d.type) }} </div>' },
+                            { field: 'name', title: '字典名' },
+                            { field: 'code', title: '字典码' },
+                            { field: 'item', title: '字典项' },
+                            { field: 'createTime', title: '登记时间' },
+                            { title: '操作', toolbar: '#barDicItem' }
+                        ]],
+                    })
+                },
+
+                //2.表格重载-角色关联用户
+                tableRelaod_dicItem: function (sParam) {
+                    table.reload('table-dicItem', {
+                        where: sParam,
+                        page: {
+                            curr: 1
+                        }
+                    })
+                },
+
+                //3.字典项登记
+                pop_dicName: function (data) {
+                    var sparam = {};
+                    sparam.title = '字典项登记'; //标题
+                    sparam.width = '420px'; //宽度
+                    sparam.height = '480px'; //高度
+                    sparam.id = 'dicItem'; //内容div的id
+                    sparam.view = '../viewDicItem'; //加载的页面路径
+                    sparam.url = '';
+                    sparam.data = data; //传入弹出层的参数
+                    sparam.button = 'form-submit-unit'; //按钮
+                    global.pop(sparam);
+                }
+
+            }
+
+
+
+            //******3.初始化******
+            active.dicNameTreeInit(); // 角色树--初始化
+            active.tableInit_dicItem(); //角色关联用户--初始化
+            //active.tableInit_roleModule(); //角色关联模块--初始化
+
+            $('#dicNameLeft').css({ height: '800px', background: '#f8f8f8' }); //界面样式初始化
+            $('#dicNameRight').css({ height: '800px', background: 'white' });
+
+
+            //******4.事件监听******
+            //******(1)角色树监听******
+            //1.监听角色树节点
+            dtree.on("node('dtreeDicName')", function (obj) {
+                var param = obj.param;
+                $('#jlbh').val(param.nodeId); //记录编号
+                $('#name').val(param.context); //字典名称
+                //分页切换
+                element.tabChange('itemTab', 'dicItem');
+            });
+
+
+            //******(2)角色按钮监听******
+            //1.添加角色
+            form.on('submit(add)', function (data) {
+                var param = {};
+                param.parentId = data.field.jlbh; //父编号
+                active.pop(param); //登记修改
+            })
+
+            //2.修改角色
+            form.on('submit(modify)', function (data) {
+                //0.条件判断
+                var jlbh = data.field.jlbh;
+                if (jlbh == null || jlbh == '') {
+                    layer.msg('请先选择角色！');
+                    return;
+                }
+                //1.查询记录
+                var param = {};
+                param.url = 'dicName/queryById';
+                param.condition = { jlbh: jlbh };
+                param.type = 'dic';
+                param.callback = function (sParam) {
+                    debugger
+                    //2.更新记录
+                    var jlbh = sParam.data.jlbh;
+                    if (jlbh != null && jlbh != '') {
+                        active.pop(sParam.data);
+                    }
+                }
+                global.commonQuery(param)
+            })
+
+            //3.删除角色
+            form.on('submit(delete)', function () {
+                layer.open({
+                    content: '确定要删除吗？',
+                    btn: ['确定', '取消'],
+                    yes: function (index, layero) {
+                        var dicNameId = $('#jlbh').val();
+                        if (dicNameId == '') {
+                            layer.msg('请先选择角色！');
+                            return
+                        } else {
+                            var param = {};
+                            param.url = 'dicName/delById';
+                            param.method = 'post';
+                            param.entity = { jlbh: dicNameId };
+                            param.callback = function () {
+                                active.dicNameTreeInit();
+                                layer.msg('删除成功！')
+                            }
+                            global.commonDel(param);
+                        }
+                        layer.close(index);
+                    }
+                })
+
+            })
+
+            //******(3)tab监听******
+            //1.监听tab分页
+            element.on('tab(itemTab)', function (data) {
+                var index = data.index;
+                var dicName = $('#name').val();
+                if (dicName == '') {
+                    dicName = '0';
+                }
+                if (data.index == 0) {
+                    active.tableRelaod_dicItem({ name: dicName })
+                }
+            })
+
+            //******(4)监听字典项******
+            //1.1.头工具栏---字典项
+            table.on('toolbar(table-dicItem)', function (obj) {
+                switch (obj.event) {
+                    case 'insert':
+                        //1.角色判断
+                        var dicName = $('#name').val();
+                        if (dicName == null || dicName == '') {
+                            layer.msg('请先选择字典！');
+                            return;
+                        } else {
+                            active.pop_dicName({ name: dicName });
+                        }
+
+                };
+            })
+
+            //1.3.行工具栏---角色关联模块
+            table.on('toolbar(table-roleModule)', function (obj) {
+                switch (obj.event) {
+                    case 'insert':
+                        //1.角色判断
+                        var roleId = $('#jlbh').val();
+                        if (roleId == null || roleId == '') {
+                            layer.msg('请选择角色！');
+                            return;
+                        } else {
+                            active.pop_roleModule({ roleId: roleId });
+                        }
+                }
+            })
+
+            //4.清空
+            form.on('submit(clear)', function (data) {
+                var sCondition = layui.jutil.empty(data.field);
+                form.val("query-userdTable", sCondition);
+                active.tableRelaod(sCondition);
+            })
+
+        });
+    </script>
+</body>
+
+</html>

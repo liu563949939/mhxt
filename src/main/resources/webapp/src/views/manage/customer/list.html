@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <title>房东信息</title>
+    <link rel="stylesheet" href="/assets/css/layui.css">
+</head>
+
+<body>
+    <div class="layui-fluid">
+        <div class="layui-card">
+            <!--查询条件-->
+            <div class="layui-form layui-card-header layuiadmin-card-header-auto" lay-filter="query-customerTable"
+                style="padding-top:20px;margin-top:10px;">
+                <div class="layui-form-item" id="query-customerTable">
+                    <!--租售状态-->
+                    <label class="layui-form-label" style="width:60px;padding:9px 10px;">租售状态</label>
+                    <div class="layui-input-inline">
+                        <select name="saleStatus" lay-verify="">
+                            <option value="">请选择</option>
+                            <option value="1">租</option>
+                            <option value="2">售</option>
+                        </select>
+                    </div>
+                    <!--装修状态-->
+                    <label class="layui-form-label" style="width:60px;padding:9px 10px;">装修状态</label>
+                    <div class="layui-input-inline">
+                        <select name="decorateStatus" lay-verify="">
+                            <option value="">请选择</option>
+                            <option value="1">精装</option>
+                            <option value="2">简装</option>
+                            <option value="9">无</option>
+                        </select>
+                    </div>
+                    <!--房屋状态-->
+                    <label class="layui-form-label" style="width:60px;padding:9px 10px;">房屋状态</label>
+                    <div class="layui-input-inline">
+                        <select name="status" lay-verify="">
+                            <option value="">请选择</option>
+                            <option value="1">未租</option>
+                            <option value="2">已租</option>
+                            <option value="3">未售</option>
+                            <option value="4">已售</option>
+                        </select>
+                    </div>
+                    <!--楼层-->
+                    <label class="layui-form-label" style="width:60px;padding:9px 10px;">楼层</label>
+                    <div class="layui-input-inline">
+                        <input type="text" class="layui-input" name='floor'>
+                    </div>
+                    <!--厅室-->
+                    <label class="layui-form-label" style="width:60px;padding:9px 10px;">厅室</label>
+                    <div class="layui-input-inline">
+                        <input type="text" class="layui-input" name='room'>
+                    </div>
+                    <button lay-submit lay-filter='query' class="layui-btn" style="margin-bottom: 5px">查询</button>
+                    <button lay-submit lay-filter='clear' class="layui-btn" style="margin-bottom: 5px">清空</button>
+                </div>
+            </div>
+            <!--表格显示-->
+            <div class="layui-card-body">
+                <table class="layui-hide" id="table-customerTable" lay-filter="table-customerTable"></table>
+            </div>
+        </div>
+    </div>
+
+    <!--头工具栏-->
+    <script type="text/html" id="toolbarCustomer">
+        <div class="layui-btn-container">
+            <button class="layui-btn layui-btn-sm" lay-event="insert">新增</button>
+        </div>
+    </script>
+
+    <!--行工具栏-->
+    <script type="text/html" id="barCustomer">
+        <a class="layui-btn layui-btn-xs" lay-event="edit">编辑</a>
+        <a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="del">删除</a>
+    </script>
+
+
+    <script src="/assets/layui.js"></script>
+    <script>
+        layui.extend({
+            core: '{/}/assets/core/index', //核心模块
+            exd: '{/}/assets/extends/extend' //扩展模块
+        }).use(['layer', 'table', 'jquery', 'form', 'core', 'exd'], function () {
+            var $ = layui.jquery,
+                layer = layui.layer,
+                table = layui.table,
+                form = layui.form,
+                admin = layui.admin,
+                config = layui.setter,
+                global = layui.global,
+                dictpl = layui.dictpl;
+
+            //***1.变量定义***
+            var url = config.datamanage.url; //后端请求地址
+
+            //***2.方法定义***
+            var active = {
+                //1.表格加载
+                tableInit: function () {
+                    table.render({
+                        //(1)基本设置
+                        elem: '#table-customerTable',
+                        height: 'full-200',
+                        toolbar: '#toolbarCustomer',
+
+                        //(2)异步请求
+                        url: url + 'customer/query',
+                        method: 'post',
+                        contentType: "application/json",  //发送到服务单的编码
+                        where: {},
+                        page: true,
+                        limit: 10,
+                        request: {
+                            pageName: "page",
+                            limitName: "limit"
+                        },
+                        parseData: function (res) {
+                            return {
+                                code: res.code,
+                                msg: res.message,
+                                count: res.count,
+                                data: res.data
+                            }
+                        },
+                        //(3)表头设置
+                        cols: [[
+                            { type: 'checkbox' },
+                            { field: 'jlbh', title: '记录编号', hide: true },
+                            // { field: 'type', title: '类别', templet: '<div> {{# var fn = ' + dictpl.render('资料类型') + ' }} {{ fn(d.type) }} </div>' },
+                            { field: 'name', title: '姓名' },
+                            { field: 'card', title: '身份证' },
+                            // { field: 'phone', title: '电话' },
+                            { field: 'address', title: '地址' },
+                            { field: 'area', title: '面积' },
+                            { field: 'saleStatus', title: '租售状态' },
+                            { field: 'price', title: '价格' },
+                            { field: 'room', title: '厅室' },
+                            { field: 'decorateStatus', title: '装修状态' },
+                            { field: 'floor', title: '楼层' },
+                            { field: 'status', title: '状态' },
+                            { field: 'createTime', title: '录入时间' },
+                            { title: '操作', toolbar: '#barCustomer' }
+                        ]],
+                    })
+                },
+
+                //2.表格重载
+                tableRelaod: function (sParam) {
+                    debugger
+                    table.reload('table-customerTable', {
+                        where: sParam,
+                        page: {
+                            curr: 1
+                        }
+                    })
+                },
+
+                //4.登记修改
+                pop: function (data) {
+                    var sparam = {};
+                    sparam.title = '用户登记'; //标题
+                    sparam.width = '1200px'; //宽度
+                    sparam.height = '680px'; //高度
+                    sparam.id = 'user'; //内容div的id
+                    sparam.view = '../view'; //加载的页面路径
+                    sparam.url = 'user/save';
+                    sparam.data = data; //传入弹出层的参数
+                    sparam.button = 'form-submit-unit'; //按钮
+                    global.pop(sparam);
+                }
+            }
+
+
+            //******3.初始化******
+            active.tableInit(); //表格初始化
+
+
+            //******4.事件监听******
+            //1.监听行工具栏
+            table.on('tool(table-customerTable)', function (obj) {
+                var sEvent = obj.event;
+                if (sEvent == 'edit') {
+                    active.pop(obj.data);
+                } else if (sEvent == 'del') {
+                    debugger
+                    var sparam = {};
+                    sparam.url = 'user/del',
+                        sparam.method = 'post',
+                        sparam.entity = { jlbh: obj.data.jlbh },
+                        //定义删除回调函数
+                        sparam.callback = function () {
+                            debugger
+                            layer.closeAll();
+                            active.tableRelaod({});
+                        }
+                    //删除提示
+                    layer.open({
+                        content: '您确定删除此纪录吗？',
+                        btn: ['确定', '取消'],
+                        yes: function (index, layero) {
+                            global.commonDel(sparam);
+                        }
+                    })
+                }
+            })
+
+            //2.监听头工具栏
+            table.on('toolbar(table-customerTable)', function (obj) {
+                switch (obj.event) {
+                    case 'insert':
+                        active.pop({});
+                        debugger
+                        active.tableRelaod({});
+                };
+            })
+
+            //3.查询
+            form.on('submit(query)', function (data) {
+                debugger
+                active.tableRelaod(data.field);
+            })
+
+            //4.清空
+            form.on('submit(clear)', function (data) {
+                var sCondition = layui.jutil.empty(data.field);
+                form.val("query-customerTable", sCondition);
+                active.tableRelaod(sCondition);
+            })
+        });
+    </script>
+</body>
+
+</html>

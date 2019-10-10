@@ -201,6 +201,9 @@ layui.define(['layer', 'jquery', 'table', 'setter'], function (exports) {
                             sparam.method = 'post';
                             sparam.entity = data.field;
                             sparam.callback = function () {
+                                if(typeof(param.callback) == 'function'){
+                                    param.callback();
+                                }
                                 layui.layer.close(index); //关闭弹层
                             }
                             obj.commonAdd(sparam);
