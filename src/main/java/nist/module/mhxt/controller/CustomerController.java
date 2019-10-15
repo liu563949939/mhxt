@@ -26,4 +26,18 @@ public class CustomerController {
         Map<String,Object> result = customerService.query(entity);
         return ResponseUtil.writer("0","success",result.get("dataList"),(Long) result.get("count"));
     }
+
+    //2.保存
+    @RequestMapping(value = "/save",method = {RequestMethod.GET, RequestMethod.POST})
+    public String save(@RequestBody CustomerEntity entity){
+        CustomerEntity customerEntity = customerService.save(entity);
+        return ResponseUtil.writer("0","success",customerEntity);
+    }
+
+    //3.删除
+    @RequestMapping(value = "/del",method = {RequestMethod.GET, RequestMethod.POST})
+    public String del(@RequestBody CustomerEntity entity){
+        customerService.del(entity);
+        return ResponseUtil.writer("0","success");
+    }
 }

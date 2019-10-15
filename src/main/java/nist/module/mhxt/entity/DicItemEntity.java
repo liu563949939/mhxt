@@ -17,7 +17,7 @@ public class DicItemEntity extends PageEntity {
     private String name;
     private String code;
     private String item;
-    private String createtime;
+    private String createTime;
 
     public String getJlbh() {
         return jlbh;
@@ -51,11 +51,11 @@ public class DicItemEntity extends PageEntity {
         this.item = item;
     }
 
-    public String getCreatetime() {
-        return createtime;
+    public String getCreateTime() {
+        return createTime;
     }
 
-    public void setCreatetime(String createtime) {
-        this.createtime = createtime;
+    public void setCreateTime(String createTime) {
+        this.createTime = createTime;
     }
 }

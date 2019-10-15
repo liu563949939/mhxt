@@ -56,15 +56,18 @@
                     if (data.length == 1) {
                         debugger
                         var userId = data[0].jlbh,
-                            unitCode = data[0].unitCode,
-                            name = data[0].name;
+                            name = data[0].name,
+                            unitCode = data[0].unitCode, //单位ID
+                            unitName = data[0].unitName; //单位名称
+
                         //session赋值
                         layui.sessionData('login', {
                             key: 'userInfo',
                             value: [
-                                {userId: userId},
-                                {unitCode: unitCode},
-                                {name: name}
+                                { userId: userId },
+                                { name: name },
+                                { unitCode: unitCode },
+                                { unitName: unitName }
                             ]
                         });
                         //2.页面跳转

@@ -12,7 +12,7 @@ layui.define(['layer', 'jquery', 'table', 'setter'], function (exports) {
 
     var obj = {
         //***(1)ajax通用方法***
-        //1.通用查询--同步
+        //1-1.通用查询--异步
         commonQuery: function (param) {
             $.ajax({
                 //1.请求头(格式)
@@ -25,6 +25,30 @@ layui.define(['layer', 'jquery', 'table', 'setter'], function (exports) {
                 data: JSON.stringify(param.condition), //讲js对象序列化
                 //3.回调函数
                 success: function (obj) {
+                    debugger
+                    if (param.type == 'dic') {
+                        // debugger
+                        param.data = obj.data;
+                        param.callback(param);
+                    }
+                }
+            })
+        },
+
+        //1-2.通用查询--同步
+        commonQueryAsycFalse: function (param) {
+            $.ajax({
+                //1.请求头(格式)
+                headers: { 'Content-Type': 'application/json;charset=utf8' },
+                dataType: 'json', //预期服务器返回数据的类型
+                //2.请求体
+                url: config.datamanage.url + param.url,
+                method: 'post', //请求方法
+                async: false, //是否异步
+                data: JSON.stringify(param.condition), //讲js对象序列化
+                //3.回调函数
+                success: function (obj) {
+                    debugger
                     if (param.type == 'dic') {
                         // debugger
                         param.data = obj.data;
@@ -106,12 +130,12 @@ layui.define(['layer', 'jquery', 'table', 'setter'], function (exports) {
 
             for (var i = 0; i < keys.length; i++) {
                 var param = {};
-                param.url = 'dic/query'; //字典请求地址
+                param.url = 'dicItem/queryByName'; //字典请求地址
                 param.condition = { name: data[keys[i]] }; //获得字典项目
                 param.callback = obj.pickDic_callbak;
                 param.type = 'dic'; //字典查询
                 param.ele = keys[i]; //DOM对象的ID
-                obj.commonQuery(param);
+                obj.commonQueryAsycFalse(param);
             }
         },
 
@@ -152,7 +176,44 @@ layui.define(['layer', 'jquery', 'table', 'setter'], function (exports) {
         },
 
 
-        //***(3)util函数***
+
+        //***(3)admin弹出层***
+        pop: function (param) {
+            debugger
+            var id = param.id, //内容div的id
+                url = param.url, //url
+                i = param.data; //传入弹出层的参数(让子窗体绑定数据集)
+            admin.popup({
+                title: param.title, //标题
+                area: [param.width, param.height], //宽度和高度
+                id: id,
+                success: function (layer, index) {
+                    $("#" + id).css('padding', '1px');
+                    layui.view(id).render(param.view, i).done(function () {
+                        form.render();
+                        form.on('submit(' + param.button + ')', function (data) {
+                            debugger
+                            //ajax请求提交数据
+                            sparam = {};
+                            sparam.url = url;
+                            sparam.method = 'post';
+                            sparam.entity = data.field;
+                            sparam.callback = function () {
+                                if (typeof (param.callback) == 'function') {
+                                    param.callback();
+                                }
+                                layui.layer.close(index); //关闭弹层
+                            }
+                            obj.commonAdd(sparam);
+                        });
+                    });
+                }
+            });
+        },
+
+
+
+        //***(4)util函数***
         //1.日期增加(天数)
         dateCompute: function (sDate, sDayNum) {
             debugger
@@ -178,40 +239,6 @@ layui.define(['layer', 'jquery', 'table', 'setter'], function (exports) {
         },
 
 
-
-        //***(4)admin弹出层***
-        pop: function (param) {
-            debugger
-            var id = param.id, //内容div的id
-                url = param.url, //url
-                i = param.data; //传入弹出层的参数(让子窗体绑定数据集)
-            admin.popup({
-                title: param.title, //标题
-                area: [param.width, param.height], //宽度和高度
-                id: id,
-                success: function (layer, index) {
-                    $("#" + id).css('padding', '1px');
-                    layui.view(id).render(param.view, i).done(function () {
-                        form.render();
-                        form.on('submit(' + param.button + ')', function (data) {
-                            debugger
-                            //ajax请求提交数据
-                            sparam = {};
-                            sparam.url = url;
-                            sparam.method = 'post';
-                            sparam.entity = data.field;
-                            sparam.callback = function () {
-                                if(typeof(param.callback) == 'function'){
-                                    param.callback();
-                                }
-                                layui.layer.close(index); //关闭弹层
-                            }
-                            obj.commonAdd(sparam);
-                        });
-                    });
-                }
-            });
-        },
 
 
 

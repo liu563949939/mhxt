@@ -17,31 +17,19 @@
                     <!--租售状态-->
                     <label class="layui-form-label" style="width:60px;padding:9px 10px;">租售状态</label>
                     <div class="layui-input-inline">
-                        <select name="saleStatus" lay-verify="">
-                            <option value="">请选择</option>
-                            <option value="1">租</option>
-                            <option value="2">售</option>
+                        <select id='saleStatus' name="saleStatus" lay-verify="">
                         </select>
                     </div>
                     <!--装修状态-->
                     <label class="layui-form-label" style="width:60px;padding:9px 10px;">装修状态</label>
                     <div class="layui-input-inline">
-                        <select name="decorateStatus" lay-verify="">
-                            <option value="">请选择</option>
-                            <option value="1">精装</option>
-                            <option value="2">简装</option>
-                            <option value="9">无</option>
+                        <select id='decorateStatus' name="decorateStatus" lay-verify="">
                         </select>
                     </div>
                     <!--房屋状态-->
                     <label class="layui-form-label" style="width:60px;padding:9px 10px;">房屋状态</label>
                     <div class="layui-input-inline">
-                        <select name="status" lay-verify="">
-                            <option value="">请选择</option>
-                            <option value="1">未租</option>
-                            <option value="2">已租</option>
-                            <option value="3">未售</option>
-                            <option value="4">已售</option>
+                        <select id='status' name="status" lay-verify="">
                         </select>
                     </div>
                     <!--楼层-->
@@ -78,6 +66,23 @@
         <a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="del">删除</a>
     </script>
 
+    <!--字段模板-->
+    <!--phone-->
+    <script type="text/html" id="phoneTpl">
+        {{#  if(d.phone != null && d.phone != ""){ }}
+          <a class="layui-btn layui-btn-xs layui-btn-radius layui-btn-danger" lay-event="viewPhone" style="color: #FFFFFF;">查看</a>
+        {{#  } else { }}
+        <a style="color: #DC143C;">无</a>
+        {{#  } }}
+      </script>
+      <!--address-->
+      <script type="text/html" id="addressTpl">
+        {{#  if(d.address != null && d.address != ""){ }}
+          <a class="layui-btn layui-btn-xs layui-btn-radius layui-btn-danger" lay-event="viewAddress" style="color: #FFFFFF;">查看</a>
+        {{#  } else { }}
+        <a style="color: #DC143C;">无</a>
+        {{#  } }}
+      </script>
 
     <script src="/assets/layui.js"></script>
     <script>
@@ -130,18 +135,16 @@
                         cols: [[
                             { type: 'checkbox' },
                             { field: 'jlbh', title: '记录编号', hide: true },
-                            // { field: 'type', title: '类别', templet: '<div> {{# var fn = ' + dictpl.render('资料类型') + ' }} {{ fn(d.type) }} </div>' },
                             { field: 'name', title: '姓名' },
-                            { field: 'card', title: '身份证' },
-                            // { field: 'phone', title: '电话' },
-                            { field: 'address', title: '地址' },
+                            { field: 'phone', title: '电话', templet: '#phoneTpl' },
+                            { field: 'address', title: '地址' , templet: '#addressTpl' },
                             { field: 'area', title: '面积' },
-                            { field: 'saleStatus', title: '租售状态' },
+                            { field: 'saleStatus', title: '租售状态', templet: '<div> {{# var fn = ' + dictpl.render('租售状态') + ' }} {{ fn(d.saleStatus) }} </div>' },
                             { field: 'price', title: '价格' },
                             { field: 'room', title: '厅室' },
-                            { field: 'decorateStatus', title: '装修状态' },
+                            { field: 'decorateStatus', title: '装修状态', templet: '<div> {{# var fn = ' + dictpl.render('装修状态') + ' }} {{ fn(d.decorateStatus) }} </div>' },
                             { field: 'floor', title: '楼层' },
-                            { field: 'status', title: '状态' },
+                            { field: 'status', title: '状态', templet: '<div> {{# var fn = ' + dictpl.render('状态') + ' }} {{ fn(d.status) }} </div>' },
                             { field: 'createTime', title: '录入时间' },
                             { title: '操作', toolbar: '#barCustomer' }
                         ]],
@@ -150,7 +153,6 @@
 
                 //2.表格重载
                 tableRelaod: function (sParam) {
-                    debugger
                     table.reload('table-customerTable', {
                         where: sParam,
                         page: {
@@ -162,13 +164,16 @@
                 //4.登记修改
                 pop: function (data) {
                     var sparam = {};
-                    sparam.title = '用户登记'; //标题
-                    sparam.width = '1200px'; //宽度
+                    sparam.title = '房屋登记'; //标题
+                    sparam.width = '720px'; //宽度
                     sparam.height = '680px'; //高度
-                    sparam.id = 'user'; //内容div的id
+                    sparam.id = 'customer'; //内容div的id
                     sparam.view = '../view'; //加载的页面路径
-                    sparam.url = 'user/save';
+                    sparam.url = 'customer/save';
                     sparam.data = data; //传入弹出层的参数
+                    sparam.callback = function () {
+                        active.tableRelaod({});
+                    }
                     sparam.button = 'form-submit-unit'; //按钮
                     global.pop(sparam);
                 }
@@ -176,35 +181,39 @@
 
 
             //******3.初始化******
+            global.pickDic({saleStatus:'租售状态',decorateStatus:'装修状态',status:'状态'}); //字典初始化
             active.tableInit(); //表格初始化
 
 
             //******4.事件监听******
             //1.监听行工具栏
             table.on('tool(table-customerTable)', function (obj) {
+                debugger
+                var jlbh = obj.data.jlbh;
                 var sEvent = obj.event;
                 if (sEvent == 'edit') {
                     active.pop(obj.data);
                 } else if (sEvent == 'del') {
-                    debugger
-                    var sparam = {};
-                    sparam.url = 'user/del',
-                        sparam.method = 'post',
-                        sparam.entity = { jlbh: obj.data.jlbh },
-                        //定义删除回调函数
-                        sparam.callback = function () {
-                            debugger
-                            layer.closeAll();
-                            active.tableRelaod({});
-                        }
                     //删除提示
                     layer.open({
                         content: '您确定删除此纪录吗？',
                         btn: ['确定', '取消'],
                         yes: function (index, layero) {
+                            var sparam = {};
+                            sparam.url = 'customer/del',
+                                sparam.method = 'post',
+                                sparam.entity = { jlbh: jlbh },
+                                sparam.callback = function () {
+                                    layer.close(index);
+                                    active.tableRelaod({});
+                                }
                             global.commonDel(sparam);
                         }
                     })
+                } else if(sEvent == 'viewPhone'){
+                    layer.alert(obj.data.phone, {icon: 4});
+                } else if(sEvent == 'viewAddress'){
+                    layer.alert(obj.data.address, {icon: 4});
                 }
             })
 
@@ -213,7 +222,6 @@
                 switch (obj.event) {
                     case 'insert':
                         active.pop({});
-                        debugger
                         active.tableRelaod({});
                 };
             })

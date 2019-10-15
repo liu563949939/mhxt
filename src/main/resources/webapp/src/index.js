@@ -41,8 +41,9 @@
             userInfo = login.userInfo;
         if (userInfo != undefined && login != null) {
             var userId = userInfo[0].userId,
-                unitCode = userInfo[1].unitCode,
-                name = userInfo[2].name;
+                name = userInfo[1].name,
+                unitCode = userInfo[2].unitCode,
+                unitName = userInfo[3].unitName;
         }
 
 
@@ -64,7 +65,7 @@
                     var x = active.readMenu(sParam.data);
                     $('#Nav').append(x);
                     //2.用户信息展示
-                    $('#user').text('当前用户【' + name + '】' + ', 【' + unitCode + '】');
+                    $('#user').text('当前用户【' + name + '】' + ', 所属单位【' + unitName + '】');
                     //3.菜单刷新控制
                     layui.config({
                         base: 'assets/lay/modules/'
@@ -79,20 +80,21 @@
 
         //3.方法定义
         var active = {
+
             //1.读取菜单
             readMenu: function (data) {
                 var x = '';
                 for (i = 0; i < data.length; i++) {
-                    x = x + '<li class="layui-nav-item">' +
+                    x += '<li class="layui-nav-item">' +
                         '<a href = "javascript:;" >' +
-                        '<i class="layui-icon">&#xe857;</i>' +
+                        '<i class="layui-icon ' + data[i].icon + '"></i>' +
                         '<em>' + data[i].name + '</em>' +
                         '<span class="layui-nav-more"></span>' +
                         '</a >';
 
                     var y = '<dl class="layui-nav-child">';
                     for (j = 0; j < data[i].children.length; j++) {
-                        y = y + '<dd><a href="' + data[i].children[j].url + '">' + data[i].children[j].name + '</a></dd>'
+                        y += '<dd><a href="' + data[i].children[j].url + '">' + data[i].children[j].name + '</a></dd>'
                     }
 
                     y += '</dl>';
@@ -100,6 +102,8 @@
                 }
                 return x;
             }
+
+
         }
 
     })

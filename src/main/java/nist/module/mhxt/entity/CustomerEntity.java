@@ -24,11 +24,11 @@ public class CustomerEntity extends PageEntity {
     /** 房屋地址 */
     private String address ;
     /** 房屋面积 */
-    private Integer area ;
+    private String area ;
     /** 房屋租售状态 */
     private String saleStatus ;
     /** 房屋价格 */
-    private Integer price ;
+    private String price ;
     /** 房屋厅室 */
     private Integer room ;
     /** 房屋装修状态 */
@@ -40,11 +40,11 @@ public class CustomerEntity extends PageEntity {
     /** 房东备注 */
     private String memo ;
     /** 房东登记时间 */
-    private String createtime ;
+    private String createTime ;
     /** 房东修改时间 */
-    private String modifytime ;
+    private String modifyTime ;
     /** 登记人员 */
-    private String createuser ;
+    private String createUser ;
 
     public String getJlbh() {
         return jlbh;
@@ -86,10 +86,6 @@ public class CustomerEntity extends PageEntity {
         this.address = address;
     }
 
-    public Integer getArea() {
-        return area;
-    }
-
     public String getSaleStatus() {
         return saleStatus;
     }
@@ -104,18 +100,6 @@ public class CustomerEntity extends PageEntity {
 
     public void setDecorateStatus(String decorateStatus) {
         this.decorateStatus = decorateStatus;
-    }
-
-    public void setArea(Integer area) {
-        this.area = area;
-    }
-
-    public Integer getPrice() {
-        return price;
-    }
-
-    public void setPrice(Integer price) {
-        this.price = price;
     }
 
     public Integer getRoom() {
@@ -150,27 +134,35 @@ public class CustomerEntity extends PageEntity {
         this.memo = memo;
     }
 
-    public String getCreatetime() {
-        return createtime;
+    public String getCreateTime() {
+        return createTime;
     }
 
-    public void setCreatetime(String createtime) {
-        this.createtime = createtime;
+    public void setCreateTime(String createTime) {
+        this.createTime = createTime;
     }
 
-    public String getModifytime() {
-        return modifytime;
+    public String getModifyTime() {
+        return modifyTime;
     }
 
-    public void setModifytime(String modifytime) {
-        this.modifytime = modifytime;
+    public void setModifyTime(String modifyTime) {
+        this.modifyTime = modifyTime;
     }
 
-    public String getCreateuser() {
-        return createuser;
+    public String getCreateUser() {
+        return createUser;
     }
 
-    public void setCreateuser(String createuser) {
-        this.createuser = createuser;
+    public void setCreateUser(String createUser) {
+        this.createUser = createUser;
+    }
+
+    public String getArea() {
+        return area;
+    }
+
+    public void setArea(String area) {
+        this.area = area;
     }
 }

@@ -21,6 +21,7 @@ public class UserEntity extends PageEntity {
     private String unitId;
     private String unitCode;
     private String createTime;
+    private String unitName;
 
     public String getJlbh() {
         return jlbh;
@@ -84,5 +85,13 @@ public class UserEntity extends PageEntity {
 
     public void setParentId(String parentId) {
         this.parentId = parentId;
+    }
+
+    public String getUnitName() {
+        return unitName;
+    }
+
+    public void setUnitName(String unitName) {
+        this.unitName = unitName;
     }
 }

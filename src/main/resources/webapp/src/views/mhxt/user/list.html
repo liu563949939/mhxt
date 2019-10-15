@@ -123,13 +123,16 @@
                 pop: function (data) {
                     var sparam = {};
                     sparam.title = '用户登记'; //标题
-                    sparam.width = '1200px'; //宽度
-                    sparam.height = '680px'; //高度
+                    sparam.width = '680px'; //宽度
+                    sparam.height = '420px'; //高度
                     sparam.id = 'user'; //内容div的id
                     sparam.view = '../view'; //加载的页面路径
                     sparam.url = 'user/save';
                     sparam.data = data; //传入弹出层的参数
                     sparam.button = 'form-submit-unit'; //按钮
+                    sparam.callback = function () {
+                        active.tableRelaod({});
+                    }
                     global.pop(sparam);
                 }
             }
@@ -173,8 +176,6 @@
                 switch (obj.event) {
                     case 'insert':
                         active.pop({});
-                        debugger
-                        active.tableRelaod({});
                 };
             })
 

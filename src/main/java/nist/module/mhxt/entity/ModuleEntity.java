@@ -19,6 +19,7 @@ public class ModuleEntity extends PageEntity{
     private String name;
     private String url;
     private String createTime;
+    private String icon;
 
     public String getJlbh() {
         return jlbh;
@@ -58,5 +59,13 @@ public class ModuleEntity extends PageEntity{
 
     public void setCreateTime(String createTime) {
         this.createTime = createTime;
+    }
+
+    public String getIcon() {
+        return icon;
+    }
+
+    public void setIcon(String icon) {
+        this.icon = icon;
     }
 }

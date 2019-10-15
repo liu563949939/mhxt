@@ -200,16 +200,19 @@
                 },
 
                 //3.字典项登记
-                pop_dicName: function (data) {
+                pop_dicItem: function (data) {
                     var sparam = {};
                     sparam.title = '字典项登记'; //标题
                     sparam.width = '420px'; //宽度
                     sparam.height = '480px'; //高度
                     sparam.id = 'dicItem'; //内容div的id
                     sparam.view = '../viewDicItem'; //加载的页面路径
-                    sparam.url = '';
+                    sparam.url = 'dicItem/save';
                     sparam.data = data; //传入弹出层的参数
                     sparam.button = 'form-submit-unit'; //按钮
+                    sparam.callback = function () {
+                        element.tabChange('itemTab', 'dicItem');
+                    }
                     global.pop(sparam);
                 }
 
@@ -224,6 +227,7 @@
 
             $('#dicNameLeft').css({ height: '800px', background: '#f8f8f8' }); //界面样式初始化
             $('#dicNameRight').css({ height: '800px', background: 'white' });
+
 
 
             //******4.事件监听******
@@ -311,7 +315,7 @@
             })
 
             //******(4)监听字典项******
-            //1.1.头工具栏---字典项
+            //1.1.头工具栏---新增字典项
             table.on('toolbar(table-dicItem)', function (obj) {
                 switch (obj.event) {
                     case 'insert':
@@ -321,28 +325,49 @@
                             layer.msg('请先选择字典！');
                             return;
                         } else {
-                            active.pop_dicName({ name: dicName });
+                            active.pop_dicItem({ name: dicName });
                         }
 
                 };
             })
 
-            //1.3.行工具栏---角色关联模块
-            table.on('toolbar(table-roleModule)', function (obj) {
+            //1.2.行工具栏---修改字典项
+            table.on('tool(table-dicItem)', function (obj) {
+                var jlbh = obj.data.jlbh;
                 switch (obj.event) {
-                    case 'insert':
-                        //1.角色判断
-                        var roleId = $('#jlbh').val();
-                        if (roleId == null || roleId == '') {
-                            layer.msg('请选择角色！');
-                            return;
-                        } else {
-                            active.pop_roleModule({ roleId: roleId });
-                        }
+                    case 'edit':
+                        //查找记录
+                        var param = {};
+                        param.url = 'dicItem/queryById',
+                            param.condition = { jlbh: jlbh },
+                            param.type = 'dic',
+                            param.callback = function (data) {
+                                active.pop_dicItem(data.data);
+                            }
+                        global.commonQuery(param);
+                        break;
+                    case 'del':
+                        layer.open({
+                            content: '确定要删除该字典项吗？',
+                            btn: ['确定', '取消'],
+                            yes: function (index, layero) {
+                                //调用接口删除
+                                var param = {};
+                                    param.url = 'dicItem/del',
+                                    param.method = 'post',
+                                    param.entity = {jlbh: jlbh},
+                                    param.callback = function () {
+                                        layer.close(index); //关闭弹层
+                                        element.tabChange('itemTab', 'dicItem');
+                                    }
+                                global.commonDel(param);
+                            }
+                        })
+
                 }
             })
 
-            //4.清空
+            //1.3.删除
             form.on('submit(clear)', function (data) {
                 var sCondition = layui.jutil.empty(data.field);
                 form.val("query-userdTable", sCondition);

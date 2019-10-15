@@ -3,7 +3,8 @@
         <!--jlbh(隐藏)-->
         <div class="layui-form-item">
             <div class="layui-input-inline">
-                <input type="hidden" id="pop_jlbh" name="jlbh" placeholder="记录编号" autocomplete="off" class="layui-input">
+                <input type="hidden" id="pop_jlbh" name="jlbh" placeholder="记录编号" autocomplete="off"
+                    class="layui-input">
             </div>
             <div class="layui-input-inline">
                 <input type="hidden" id="pop_parentId" name="parentId" placeholder="父编号" autocomplete="off"
@@ -15,8 +16,8 @@
         <div class="layui-form-item">
             <label class="layui-form-label labelWidth01"><span style="color: red;">*</span>资源名称</label>
             <div class="layui-input-inline">
-                <input type="text" id="pop_name" name="name" lay-verify="required" placeholder="请输入资源名称" autocomplete="off"
-                    class="layui-input">
+                <input type="text" id="pop_name" name="name" lay-verify="required" placeholder="请输入资源名称"
+                    autocomplete="off" class="layui-input">
             </div>
             <label class="layui-form-label labelWidth01 labelPosition01"><span style="color: red;">*</span>登记时间</label>
             <div class="layui-input-inline">
@@ -29,8 +30,17 @@
         <div class="layui-form-item">
             <label class="layui-form-label"><span style="color: red;">*</span>链接地址</label>
             <div class="layui-input-inline">
-                <input type="text" id="pop_url" name="url" style="width: 300px;" lay-verify="required" placeholder="请输入链接地址"
-                    autocomplete="off" class="layui-input">
+                <input type="text" id="pop_url" name="url" style="width: 500px;" lay-verify="required"
+                    placeholder="请输入链接地址" autocomplete="off" class="layui-input">
+            </div>
+        </div>
+
+        <!--资源图标-->
+        <div class="layui-form-item">
+            <label class="layui-form-label"><span style="color: red;">*</span>资源图标</label>
+            <div class="layui-input-inline">
+                <input type="text" id="pop_icon" name="icon" placeholder="请输入资源图标" autocomplete="off"
+                    class="layui-input">
             </div>
         </div>
 
@@ -53,14 +63,39 @@
         layui.use(['global', 'form'], function () {
             var $ = layui.jquery,
                 form = layui.form,
-                global = layui.global;
-            //2.赋初值(普通字段)
-            debugger
+                global = layui.global,
+                IconFonts = layui.IconFonts;
+
+            //2.方法定义
+            var active = {
+                //1.图标选择器
+                iconInit: function () {
+                    IconFonts.render({
+                        elem: '#pop_icon', //选择器ID--选择器，推荐使用input
+                        type: 'layui_icon', // 数据类型：fontClass/layui_icon，
+                        search: true, // 是否开启搜索：true/false
+                        page: true, // 是否开启分页
+                        limit: 12, // 每页显示数量，默认12
+                        click: function (data) { // 点击回调
+                            $('#pop_icon').val(data.icon);
+                        }
+                    });
+                }
+            }
+
+            //2.初始化
+            //2-1.字段赋值
             $('#pop_jlbh').val(sParam.jlbh);
             $('#pop_parentId').val(sParam.parentId);
             $('#pop_name').val(sParam.name);
             $('#pop_createTime').val(sParam.createTime);
             $('#pop_url').val(sParam.url);
+            $('#pop_icon').val(sParam.icon);
+            
+
+            //2-2.图标选择器
+            active.iconInit();
+
         })
     }
 </script>

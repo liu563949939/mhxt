@@ -3,7 +3,8 @@
         <!--jlbh(隐藏)-->
         <div class="layui-form-item">
             <div class="layui-input-inline">
-                <input type="hidden" id="jlbh" name="jlbh" placeholder="记录编号" autocomplete="off" class="layui-input">
+                <input type="hidden" id="pop_jlbh" name="jlbh" placeholder="记录编号" autocomplete="off"
+                    class="layui-input">
             </div>
         </div>
 
@@ -11,12 +12,12 @@
         <div class="layui-form-item">
             <label class="layui-form-label"><span style="color: red;">*</span>姓名</label>
             <div class="layui-input-inline">
-                <input type="text" id="name" name="name" lay-verify="required" placeholder="请输入姓名" autocomplete="off"
-                    class="layui-input">
+                <input type="text" id="pop_name" name="name" lay-verify="required" placeholder="请输入姓名"
+                    autocomplete="off" class="layui-input">
             </div>
             <label class="layui-form-label"><span style="color: red;">*</span>登记时间</label>
             <div class="layui-input-inline">
-                <input type="text" id="createTime" name="createTime" lay-verify="required" placeholder="请输入登记时间"
+                <input type="text" id="pop_createTime" name="createTime" lay-verify="required" placeholder="请输入登记时间"
                     autocomplete="off" class="layui-input">
             </div>
         </div>
@@ -25,26 +26,21 @@
         <div class="layui-form-item">
             <label class="layui-form-label"><span style="color: red;">*</span>用户名</label>
             <div class="layui-input-inline">
-                <input type="text" id="username" name="username" lay-verify="required" placeholder="请输入用户名"
+                <input type="text" id="pop_username" name="username" lay-verify="required" placeholder="请输入用户名"
                     autocomplete="off" class="layui-input">
             </div>
             <label class="layui-form-label"><span style="color: red;">*</span>密码</label>
             <div class="layui-input-inline">
-                <input type="text" id="password" name="password" lay-verify="required" placeholder="请输入密码"
+                <input type="text" id="pop_password" name="password" lay-verify="required" placeholder="请输入密码"
                     autocomplete="off" class="layui-input">
             </div>
         </div>
 
-        <!--单位id和单位编码-->
+        <!--单位名称-->
         <div class="layui-form-item">
-            <label class="layui-form-label"><span style="color: red;">*</span>单位ID</label>
-            <div class="layui-input-inline">
-                <input type="text" id="unitId" name="unitId" lay-verify="required" placeholder="请输入单位ID"
-                    autocomplete="off" class="layui-input">
-            </div>
-            <label class="layui-form-label"><span style="color: red;">*</span>单位编码</label>
-            <div class="layui-input-inline">
-                <input type="text" id="unitCode" name="unitCode" lay-verify="required" placeholder="请输入单位编码"
+            <label class="layui-form-label"><span style="color: red;">*</span>单位名称</label>
+            <div class="layui-input-inline" style="width:500px;">
+                <input type="text" id="pop_unitName" name="unitName" lay-verify="required" placeholder="请输入单位名称"
                     autocomplete="off" class="layui-input">
             </div>
         </div>
@@ -53,7 +49,7 @@
         <div class="layui-form-item">
             <label class="layui-form-label"></label>
             <input type="button" lay-submit lay-filter="form-submit-unit" value="确认" class="layui-btn"
-                style="float:right;margin-right: 10px; ">
+                style="float:right;margin-right: 20px; margin-top:20px;">
         </div>
     </div>
 </div>
@@ -64,20 +60,25 @@
 
 <script>
     layui.data.done = function (d) {
-        var sParam = d.params;
+        var sParam = d.params,
+            jlbh = sParam.jlbh;
         layui.use(['global', 'form'], function () {
             var $ = layui.jquery,
                 form = layui.form,
                 global = layui.global;
-            
+
             //2.赋初值(普通字段)
-            $('#jlbh').val(sParam.jlbh);
-            $('#name').val(sParam.name);
-            $('#createTime').val(sParam.createTime);
-            $('#username').val(sParam.username);
-            $('#password').val(sParam.password);
-            $('#unitId').val(sParam.unitId);
-            $('#unitCode').val(sParam.unitCode);
+            if (jlbh != null && jlbh != "") {
+                $('#pop_jlbh').val(sParam.jlbh);
+                $('#pop_name').val(sParam.name);
+                $('#pop_createTime').val(sParam.createTime);
+                $('#pop_username').val(sParam.username);
+                $('#pop_password').val(sParam.password);
+                $('#pop_unitName').val(sParam.unitName);
+            } else {
+                var myDate = new Date();
+                $('#pop_createTime').val(myDate.toLocaleDateString());
+            }
         })
     }
 </script>

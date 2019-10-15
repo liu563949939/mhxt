@@ -1,9 +1,7 @@
 package nist.module.mhxt.service;
 
 import nist.module.mhxt.entity.DicItemEntity;
-import nist.module.mhxt.entity.UserEntity;
 import nist.module.mhxt.repository.DicItemRepository;
-import org.hibernate.annotations.NaturalId;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -53,8 +51,44 @@ public class DicItemService {
         return sFhz;
     }
 
+    //1-2.根据jlbh查询
+    public DicItemEntity queryById(DicItemEntity entity){
+        //1.条件处理
+        StringBuilder sCondition = new StringBuilder("select * from s_dic_item where 1 = 1");
+        String jlbh = entity.getJlbh();
+        if(jlbh != null && !"".equals(jlbh)){
+            sCondition.append(" and jlbh = '" + jlbh + "'");
+        }
+        //2.语句执行
+        Query query = entityManager.createNativeQuery(sCondition.toString(),DicItemEntity.class);
+        DicItemEntity dataListSingle = (DicItemEntity)query.getSingleResult();
+        //3.结果返回
+        return dataListSingle;
+    }
+
+    //1-3.根据name查询
+    public List<DicItemEntity> queryByName(DicItemEntity entity){
+        //1.条件处理
+        StringBuilder sCondition = new StringBuilder("select * from s_dic_item where 1 = 1");
+        String dicName = entity.getName();
+        if(dicName != null && !"".equals(dicName)){
+            sCondition.append(" and name = '" + dicName + "'");
+        }
+        //2.语句执行
+        Query query = entityManager.createNativeQuery(sCondition.toString(),DicItemEntity.class);
+        List<DicItemEntity> dataList = query.getResultList();
+        //3.结果返回
+        return dataList;
+    }
+
     //2.保存
     public DicItemEntity save(DicItemEntity entity){
         return dicItemRepository.save(entity);
     }
+
+    //3.根据jlbh删除
+    public void del(DicItemEntity entity){
+        dicItemRepository.delete(entity);
+    }
+
 }
