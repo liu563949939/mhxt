@@ -12,18 +12,20 @@
 </head>
 
 <body class="login-wrap">
-    <div class="login-container">
+    <div class="login-container" style="background: CadetBlue;">
         <form class="login-form">
-            <div class="input-group">
+            <div style="position: relative;top:50px;font-size: 18px;">用 户：</div>
+            <div class="input-group" style="margin-left: 60px;">
                 <input type="text" id="username" class="input-field">
-                <label for="username" class="input-label">
-                    <span class="label-title">用户名</span>
+                <label for="username" class="input-label" style="width:75%">
+                    <!-- <span class="label-title">用户名</span> -->
                 </label>
             </div>
-            <div class="input-group">
+            <div style="position: relative;top:50px;font-size: 18px;">密 码：</div>
+            <div class="input-group" style="margin-left: 60px;">
                 <input type="password" id="password" class="input-field">
-                <label for="password" class="input-label">
-                    <span class="label-title">密码</span>
+                <label for="password" class="input-label" style="width:75%">
+                    <!-- <span class="label-title">密码</span> -->
                 </label>
             </div>
             <button type="button" id="login" class="login-button">登录<i class="ai ai-enter"></i></button>
@@ -38,8 +40,12 @@
     layui.use(["layer", "table", "jquery", "form", 'core', 'exd'], function () {
         var $ = layui.jquery,
             global = layui.global,
-            layer = layui.layer;
+            layer = layui.layer,
+            form = layui.form;
+        
 
+        //1.初始化
+        form.render();    
         //用户登陆
         $('#login').on('click', function () {
             var localTest = layui.sessionData('login');
@@ -58,7 +64,8 @@
                         var userId = data[0].jlbh,
                             name = data[0].name,
                             unitCode = data[0].unitCode, //单位ID
-                            unitName = data[0].unitName; //单位名称
+                            unitName = data[0].unitName, //单位名称
+                            type = data[0].type; //管理员标识
 
                         //session赋值
                         layui.sessionData('login', {
@@ -67,7 +74,8 @@
                                 { userId: userId },
                                 { name: name },
                                 { unitCode: unitCode },
-                                { unitName: unitName }
+                                { unitName: unitName },
+                                { type: type }
                             ]
                         });
                         //2.页面跳转

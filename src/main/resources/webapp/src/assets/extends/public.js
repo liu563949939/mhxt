@@ -21,7 +21,8 @@ Date.prototype.Format = function (fmt) { //author: meizz
     return fmt;
 }
 
+var obj = {}
 
 layui.define(function(exports) {
-    exports('public',{});
+    exports('public',obj);
 });

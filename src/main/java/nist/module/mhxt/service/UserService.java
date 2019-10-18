@@ -5,10 +5,12 @@ import nist.module.mhxt.entity.UserEntity;
 import nist.module.mhxt.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.RequestMapping;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
+import javax.script.ScriptContext;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -24,10 +26,10 @@ public class UserService {
     //1-1.query方法(带分页)
     public Map<String,Object> getDataList(UserEntity userEntity){
         Map<String,Object> sFhz = new HashMap<String,Object>();
-        //1.获得条件
+        //1.条件处理
         StringBuilder sCondition = new StringBuilder("select rownum as sNum,t.* from s_user t where 1 = 1");
         StringBuilder sConditionCount = new StringBuilder("select count(*) from s_user where 1 = 1");
-        //2.条件处理
+
         if(userEntity.getName() != null && !userEntity.getName().equals("")){
             sCondition.append(" and name like '%" + userEntity.getName() + "%'");
             sConditionCount.append(" and name like '" + userEntity.getName() + "'");
@@ -36,24 +38,63 @@ public class UserService {
             sCondition.append(" and username like '%" + userEntity.getUsername() + "%'");
             sConditionCount.append((" and username like '%" + userEntity.getUsername() + "%'"));
         }
-        //3.分页处理
+
+        //去掉根菜单用户信息
+        sCondition.append(" and jlbh <> '1'");
+
         Integer iStart = (userEntity.getPage()-1)*userEntity.getLimit() + 1; //开始
         Integer iEnd = userEntity.getPage() * userEntity.getLimit(); //结束
-        //4.sql语句准备
+
         String SQL = "select * From (" + sCondition.toString() + ") where sNum between " + String.valueOf(iStart) + " and " + String.valueOf(iEnd);
         String SQLCount = sConditionCount.toString();
-        //4.语句执行
+
+        //2.语句执行
         Query query = entityManager.createNativeQuery(SQL,UserEntity.class);
         Query queryCount = entityManager.createNativeQuery(SQLCount);
         List<UserEntity> dataList = query.getResultList(); //查询结果
         Object obj = queryCount.getSingleResult(); //总数结果
         Long count = Long.valueOf(String.valueOf(obj));
 
-        //5.组织返回结果
+        //3.结果返回
         sFhz.put("dataList",dataList);
         sFhz.put("count",count);
         return sFhz;
     }
+
+    //1-2.根据moduleId查询对用的用户(带分页)
+    public Map<String,Object> queryByModuleId(ModuleEntity entity){
+        Map<String,Object> sFhz = new HashMap<String,Object>();
+        //1.条件处理
+        StringBuilder sCondition = new StringBuilder("select rownum as sNum,t.* from s_user t where 1 = 1");
+        StringBuilder sConditionCount = new StringBuilder("select count(*) from s_user t where 1 = 1");
+
+        String jlbh = entity.getJlbh();
+        if(jlbh != null && !"".equals(jlbh)){
+            sCondition.append(" and t.jlbh in (select distinct v.userid From s_user_role v where v.roleid in(select b.roleid from s_role a,s_role_module b where a.jlbh = b.roleid and b.moduleid = '" + jlbh + "')) ");
+            sConditionCount.append(" and t.jlbh in (select distinct v.userid From s_user_role v where v.roleid in(select b.roleid from s_role a,s_role_module b where a.jlbh = b.roleid and b.moduleid = '" + jlbh + "')) ");
+        }
+        //去掉根菜单用户信息
+        sCondition.append(" and jlbh <> '1'");
+
+        Integer iStart = (entity.getPage()-1)*entity.getLimit() + 1; //开始
+        Integer iEnd = entity.getPage() * entity.getLimit(); //结束
+
+        String SQL = "select * From (" + sCondition.toString() + ") where sNum between " + String.valueOf(iStart) + " and " + String.valueOf(iEnd);
+        String SQLCount = sConditionCount.toString();
+
+        //2.语句执行
+        Query query = entityManager.createNativeQuery(SQL,UserEntity.class);
+        Query queryCount = entityManager.createNativeQuery(SQLCount);
+        List<UserEntity> dataList = query.getResultList(); //查询结果
+        Object obj = queryCount.getSingleResult(); //总数结果
+        Long count = Long.valueOf(String.valueOf(obj));
+
+        //3.结果返回
+        sFhz.put("dataList",dataList);
+        sFhz.put("count",count);
+        return sFhz;
+    }
+
     //2.save方法
     public UserEntity save(UserEntity userEntity){
         return userRepository.save(userEntity);

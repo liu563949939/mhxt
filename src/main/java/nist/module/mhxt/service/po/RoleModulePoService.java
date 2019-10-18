@@ -29,6 +29,9 @@ public class RoleModulePoService {
             sCondition.append(" and roleId = '" + roleEntity.getJlbh() + "'");
             sConditionCount.append(" and roleId = '" + roleEntity.getJlbh() + "'");
         }
+        //去掉跟模块信息
+        sCondition.append(" and v.parentId <> '0'");
+        sConditionCount.append(" and v.parentid <> '0'");
 
         Integer iStart = (roleEntity.getPage()-1)*roleEntity.getLimit() + 1; //开始
         Integer iEnd = roleEntity.getPage() * roleEntity.getLimit(); //结束

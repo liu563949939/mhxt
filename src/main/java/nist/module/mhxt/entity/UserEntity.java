@@ -18,6 +18,7 @@ public class UserEntity extends PageEntity {
     private String name;
     private String username;
     private String password;
+    private String type;
     private String unitId;
     private String unitCode;
     private String createTime;
@@ -93,5 +94,13 @@ public class UserEntity extends PageEntity {
 
     public void setUnitName(String unitName) {
         this.unitName = unitName;
+    }
+
+    public String getType() {
+        return type;
+    }
+
+    public void setType(String type) {
+        this.type = type;
     }
 }

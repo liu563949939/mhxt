@@ -66,6 +66,7 @@
                 global = layui.global,
                 IconFonts = layui.IconFonts;
 
+            var jlbh = sParam.jlbh;
             //2.方法定义
             var active = {
                 //1.图标选择器
@@ -85,13 +86,19 @@
 
             //2.初始化
             //2-1.字段赋值
-            $('#pop_jlbh').val(sParam.jlbh);
-            $('#pop_parentId').val(sParam.parentId);
-            $('#pop_name').val(sParam.name);
-            $('#pop_createTime').val(sParam.createTime);
-            $('#pop_url').val(sParam.url);
-            $('#pop_icon').val(sParam.icon);
-            
+            if (jlbh != null && jlbh != '') {
+                $('#pop_jlbh').val(sParam.jlbh);
+                $('#pop_parentId').val(sParam.parentId);
+                $('#pop_name').val(sParam.name);
+                $('#pop_createTime').val(sParam.createTime);
+                $('#pop_url').val(sParam.url);
+                $('#pop_icon').val(sParam.icon);
+            }else{
+                $('#pop_parentId').val(sParam.parentId);
+                $('#pop_createTime').val(new Date().Format('yyyy-MM-dd'));
+            }
+
+
 
             //2-2.图标选择器
             active.iconInit();

@@ -7,6 +7,7 @@
                     class="layui-input">
             </div>
         </div>
+
         <!--parentId(隐藏)-->
         <div class="layui-form-item">
             <div class="layui-input-inline">
@@ -14,6 +15,7 @@
                     class="layui-input">
             </div>
         </div>
+
         <!--字典名称-->
         <div class="layui-form-item">
             <label class="layui-form-label"><span style="color: red;">*</span>字典名称</label>
@@ -54,11 +56,20 @@
                 form = layui.form,
                 global = layui.global;
 
+            //1.变量定义
+            var jlbh = sParam.jlbh;
+
             //2.赋初值(普通字段)
-            $('#pop_jlbh').val(sParam.jlbh);
-            $('#pop_parentId').val(sParam.parentId);
-            $('#pop_name').val(sParam.name);
-            $('#pop_createTime').val(sParam.createTime);
+            if (jlbh != null && jlbh != '') {
+                $('#pop_jlbh').val(sParam.jlbh);
+                $('#pop_parentId').val(sParam.parentId);
+                $('#pop_name').val(sParam.name);
+                $('#pop_createTime').val(sParam.createTime);
+            } else {
+                $('#pop_parentId').val(sParam.parentId);
+                $('#pop_createTime').val(new Date().Format('yyyy-MM-dd'));
+            }
+
         })
     }
 </script>

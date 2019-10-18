@@ -71,12 +71,14 @@
               sParam.url = 'userRole/save';
               sParam.method = 'post';
               sParam.entity = {};
-              sParam.entity.userId = param[i].nodeId;
-              sParam.entity.roleId = roleId;
+              sParam.entity.userId = param[i].nodeId; //用户ID
+              sParam.entity.roleId = roleId; //角色ID
+              sParam.entity.createTime = new Date().Format("yyyy-MM-dd"); //创建时间
               global.commonAdd(sParam);
             }
             //3.关闭弹窗
             layer.closeAll();
+            layui.element.tabChange('roleTab', 'roleUser'); //分页切换
           };
         global.commonDel(sParam);
       })

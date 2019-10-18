@@ -25,9 +25,12 @@ layui.define(['layer', 'jquery', 'table', 'setter'], function (exports) {
                 data: JSON.stringify(param.condition), //讲js对象序列化
                 //3.回调函数
                 success: function (obj) {
-                    debugger
-                    if (param.type == 'dic') {
-                        // debugger
+                    // if (param.type == 'dic') {
+                    //     // debugger
+                    //     param.data = obj.data;
+                    //     param.callback(param);
+                    // }
+                    if(typeof(param.callback) == 'function'){
                         param.data = obj.data;
                         param.callback(param);
                     }
@@ -61,13 +64,13 @@ layui.define(['layer', 'jquery', 'table', 'setter'], function (exports) {
         //2.通用新增
         commonAdd: function (param) {
             $.ajax({
-                //1.请求地址和格式
+                //1.请求头和请求体
+                headers: { 'Content-Type': 'application/json;charset=utf8' },
+                dataType: 'json',
+                //2.请求体
                 url: config.datamanage.url + param.url,
                 method: param.method,
                 async: false, //是否异步
-                dataType: 'json',
-                //2.请求头和请求体
-                headers: { 'Content-Type': 'application/json;charset=utf8' },
                 data: JSON.stringify(param.entity),
                 //3.回调函数
                 success: function (obj) {
@@ -192,7 +195,6 @@ layui.define(['layer', 'jquery', 'table', 'setter'], function (exports) {
                     layui.view(id).render(param.view, i).done(function () {
                         form.render();
                         form.on('submit(' + param.button + ')', function (data) {
-                            debugger
                             //ajax请求提交数据
                             sparam = {};
                             sparam.url = url;

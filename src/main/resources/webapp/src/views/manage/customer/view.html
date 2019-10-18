@@ -3,21 +3,21 @@
         <!--jlbh(隐藏)-->
         <div class="layui-form-item">
             <div class="layui-input-inline">
-                <input type="hidden" id="pop_jlbh" name="jlbh" placeholder="记录编号" autocomplete="off" class="layui-input">
+                <input type="hidden" id="pop_jlbh" name="jlbh" placeholder="记录编号" autocomplete="off"
+                    class="layui-input">
             </div>
         </div>
 
         <!--姓名和身份证号-->
         <div class="layui-form-item">
-            <label class="layui-form-label"><span style="color: red;">*</span>姓名</label>
+            <label class="layui-form-label">姓名</label>
             <div class="layui-input-inline">
-                <input type="text" id="pop_name" name="name" lay-verify="required" placeholder="请输入姓名"
-                    autocomplete="off" class="layui-input">
+                <input type="text" id="pop_name" name="name" placeholder="请输入姓名" autocomplete="off" class="layui-input">
             </div>
-            <label class="layui-form-label"><span style="color: red;">*</span>身份证号</label>
+            <label class="layui-form-label">身份证号</label>
             <div class="layui-input-inline">
-                <input type="text" id="pop_card" name="card" lay-verify="required" placeholder="请输入身份证号"
-                    autocomplete="off" class="layui-input">
+                <input type="text" id="pop_card" name="card" placeholder="请输入身份证号" autocomplete="off"
+                    class="layui-input">
             </div>
         </div>
 
@@ -35,37 +35,42 @@
             </div>
         </div>
 
-        <!--房屋地址-->
+        <!--小区名称和房号-->
         <div class="layui-form-item">
-            <label class="layui-form-label"><span style="color: red;">*</span>地址</label>
-            <div class="layui-input-inline" style="width:500px;">
-                <input type="text" id="pop_address" name="address" lay-verify="required" placeholder="请输入地址"
+            <label class="layui-form-label"><span style="color: red;">*</span>小区名称</label>
+            <div class="layui-input-inline">
+                <input type="text" id="pop_cellName" name="cellName" lay-verify="required" placeholder="请输入小区名称"
                     autocomplete="off" class="layui-input">
+            </div>
+            <label class="layui-form-label">房号</label>
+            <div class="layui-input-inline">
+                <input type="text" id="pop_houseNum" name="houseNum" placeholder="请输入房号" autocomplete="off"
+                    class="layui-input">
             </div>
         </div>
 
         <!--租售状态和房屋价格-->
         <div class="layui-form-item">
-            <label class="layui-form-label"><span style="color: red;">*</span>租售状态</label>
+            <label class="layui-form-label">租售状态</label>
             <div class="layui-input-inline">
                 <select name="saleStatus" id="pop_saleStatus">
                 </select>
             </div>
-            <label class="layui-form-label"><span style="color: red;">*</span>价格</label>
+            <label class="layui-form-label">价格</label>
             <div class="layui-input-inline">
-                <input type="text" id="pop_price" name="price" lay-verify="required" placeholder="请输入价格"
-                    autocomplete="off" class="layui-input">
+                <input type="text" id="pop_price" name="price" placeholder="请输入价格" autocomplete="off"
+                    class="layui-input">
             </div>
         </div>
 
         <!--厅室和装修状态-->
         <div class="layui-form-item">
-            <label class="layui-form-label"><span style="color: red;">*</span>厅室</label>
+            <label class="layui-form-label">厅室</label>
             <div class="layui-input-inline">
-                <input type="text" id="pop_room" name="room" lay-verify="required" placeholder="请输入厅室"
-                    autocomplete="off" class="layui-input">
+                <input type="text" id="pop_room" name="room" lay-verify="number" placeholder="请输入厅室" autocomplete="off"
+                    class="layui-input">
             </div>
-            <label class="layui-form-label"><span style="color: red;">*</span>装修状态</label>
+            <label class="layui-form-label">装修状态</label>
             <div class="layui-input-inline">
                 <select name="decorateStatus" id="pop_decorateStatus">
                 </select>
@@ -74,44 +79,44 @@
 
         <!--楼层和房屋状态-->
         <div class="layui-form-item">
-            <label class="layui-form-label"><span style="color: red;">*</span>楼层</label>
+            <label class="layui-form-label">楼层</label>
             <div class="layui-input-inline">
-                <input type="text" id="pop_floor" name="floor" lay-verify="required" placeholder="请输入楼层"
+                <input type="text" id="pop_floor" name="floor" lay-verify="number" placeholder="请输入楼层"
                     autocomplete="off" class="layui-input">
             </div>
             <label class="layui-form-label"><span style="color: red;">*</span>状态</label>
             <div class="layui-input-inline">
-                <select name="status" id="pop_status">
+                <select name="status" id="pop_status" lay-verify="required">
                 </select>
             </div>
         </div>
 
         <!--房东备注-->
         <div class="layui-form-item">
-            <label class="layui-form-label"><span style="color: red;">*</span>备注</label>
+            <label class="layui-form-label">备注</label>
             <div class="layui-input-inline" style="width:500px;">
-                <textarea id="pop_memo" name="memo" lay-verify="required" placeholder="请输入备注" class="layui-textarea"></textarea>
+                <textarea id="pop_memo" name="memo" placeholder="请输入备注" class="layui-textarea"></textarea>
             </div>
         </div>
 
         <!--登记时间和登记人员-->
         <div class="layui-form-item">
-            <label class="layui-form-label"><span style="color: red;">*</span>登记时间</label>
+            <label class="layui-form-label">登记时间</label>
             <div class="layui-input-inline">
-                <input type="text" id="pop_createTime" name="createTime" lay-verify="required" placeholder="请输入登记时间"
-                    autocomplete="off" class="layui-input">
+                <input type="text" id="pop_createTime" name="createTime" placeholder="请输入登记时间" autocomplete="off"
+                    class="layui-input" readonly>
             </div>
-            <label class="layui-form-label"><span style="color: red;">*</span>登记人员</label>
+            <label class="layui-form-label">登记人员</label>
             <div class="layui-input-inline">
-                <input type="text" id="pop_createUser" name="createUser" lay-verify="required" placeholder="请输入登记人员"
-                    autocomplete="off" class="layui-input">
+                <input type="text" id="pop_createUser" name="createUser" placeholder="请输入登记人员" autocomplete="off"
+                    class="layui-input" readonly>
             </div>
         </div>
 
         <!--提交按钮-->
         <div class="layui-form-item">
             <label class="layui-form-label"></label>
-            <input type="button" lay-submit lay-filter="form-submit-unit" value="确认" class="layui-btn"
+            <input type="button" lay-filter='saveCustomerBtn' lay-submit value="确认" class="layui-btn"
                 style="float:right;margin-right: 10px; ">
         </div>
     </div>
@@ -123,6 +128,7 @@
 
 <script>
     layui.data.done = function (d) {
+        debugger
         var sParam = d.params;
         layui.use(['global', 'form'], function () {
             var $ = layui.jquery,
@@ -130,24 +136,90 @@
                 global = layui.global;
 
             //1.字典字段初始化
-            global.pickDic({ pop_saleStatus: '租售状态', pop_decorateStatus: '装修状态', pop_status: '状态' });
+            var jlbh = sParam.jlbh;
+            global.pickDic({
+                pop_saleStatus: '租售状态',
+                pop_decorateStatus: '装修状态',
+                pop_status: '状态'
+            });
+            //用户session
+            var localTest = layui.sessionData('login'); //获取表
+            var username = localTest.userInfo[1].name; //获取属性
 
-            //2.赋初值(普通字段)
-            $('#pop_jlbh').val(sParam.jlbh); //记录编号
-            $('#pop_name').val(sParam.name); //房东姓名
-            $('#pop_card').val(sParam.card); //房东身份证号
-            $('#pop_phone').val(sParam.phone); //房东电话
-            $('#pop_area').val(sParam.area); //房屋面积
-            $('#pop_address').val(sParam.address); //房屋地址
-            $('#pop_saleStatus').val(sParam.saleStatus); //房屋租售状态
-            $('#pop_price').val(sParam.price); //房屋价格
-            $('#pop_room').val(sParam.room); //房屋厅室
-            $('#pop_decorateStatus').val(sParam.decorateStatus); //房屋装修状态
-            $('#pop_floor').val(sParam.floor); //房屋楼层
-            $('#pop_status').val(sParam.status); //房屋状态
-            $('#pop_memo').val(sParam.memo); //房东备注
-            $('#pop_createTime').val(sParam.createTime); //房东登记时间
-            $('#pop_createUser').val(sParam.createUser); //登记人员
+            //2.方法定义
+            var active = {
+                //1.保存客户信息
+                saveCustomer: function (entity) {
+                    var param = {};
+                    param.url = 'customer/save',
+                        param.method = 'post',
+                        param.entity = entity,
+                        param.callback = function () {
+                            layer.closeAll();
+                        }
+                    global.commonAdd(param);
+                }
+            }
+
+            //3.赋初值(普通字段)
+            if (jlbh != null && jlbh != '') {
+                $('#pop_jlbh').val(sParam.jlbh); //记录编号
+                $('#pop_name').val(sParam.name); //房东姓名
+                $('#pop_card').val(sParam.card); //房东身份证号
+                $('#pop_phone').val(sParam.phone); //房东电话
+                $('#pop_area').val(sParam.area); //房屋面积
+                $('#pop_cellName').val(sParam.cellName); //房屋地址
+                $('#pop_houseNum').val(sParam.houseNum); //房屋地址
+                $('#pop_saleStatus').val(sParam.saleStatus); //房屋租售状态
+                $('#pop_price').val(sParam.price); //房屋价格
+                $('#pop_room').val(sParam.room); //房屋厅室
+                $('#pop_decorateStatus').val(sParam.decorateStatus); //房屋装修状态
+                $('#pop_floor').val(sParam.floor); //房屋楼层
+                $('#pop_status').val(sParam.status); //房屋状态
+                $('#pop_memo').val(sParam.memo); //房东备注
+                if (typeof (sParam.createTime) == 'undefined') {
+                    $('#pop_createTime').val(new Date().Format('yyyy-MM-dd')); //房东登记时间
+                } else {
+                    $('#pop_createTime').val(sParam.createTime);
+                }
+                $('#pop_createUser').val(sParam.createUser); //登记人员
+            } else {
+                $('#pop_room').val(0);
+                $('#pop_floor').val(0);
+                $('#pop_createTime').val(new Date().Format('yyyy-MM-dd')); //房东登记时间
+                $('#pop_createUser').val(username); //登记人员  
+            }
+
+            //4.事件监听
+            form.on('submit(saveCustomerBtn)', function (obj) {
+                var entity = obj.field;
+                if (jlbh != null && jlbh != '') {
+                    active.saveCustomer(entity); //2.提交代码保存
+                } else {
+                    //1.是否重复录入(根据小区名称+房号判断)
+                    var cellName = $('#pop_cellName').val(), //小区名称
+                        houseNum = $('#pop_houseNum').val(); //房号
+                    var param = {};
+                    param.url = 'customer/isExist',
+                        param.condition = {
+                            cellName: cellName,
+                            houseNum: houseNum
+                        },
+                        param.callback = function (sParam) {
+                            var flag = sParam.data.isExist;
+                            if (flag) {
+                                layer.alert('此房源信息已存在，无需重复登记', {
+                                    icon: 2
+                                });
+                                return
+                            } else {
+                                active.saveCustomer(entity); //2.提交代码保存
+                            }
+                        }
+                    global.commonQuery(param);
+                }
+
+            })
 
         })
     }

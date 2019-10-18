@@ -36,6 +36,13 @@ public class UserController {
         return ResponseUtil.writer("0","success",dataList);
     }
 
+    //1-3.根据moduleId查询(分页)
+    @RequestMapping(value = "/queryByModuleId",method = {RequestMethod.GET,RequestMethod.POST})
+    public String queryByModuleId(@RequestBody ModuleEntity entity){
+        Map<String,Object> result = userService.queryByModuleId(entity);
+        return ResponseUtil.writer("0","success",result.get("dataList"),(Long) result.get("count"));
+    }
+
     //2.保存
     @RequestMapping(value = "/save", method = {RequestMethod.GET, RequestMethod.POST})
     public String save(@RequestBody UserEntity userEntity){

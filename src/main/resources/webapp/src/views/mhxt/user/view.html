@@ -6,6 +6,10 @@
                 <input type="hidden" id="pop_jlbh" name="jlbh" placeholder="记录编号" autocomplete="off"
                     class="layui-input">
             </div>
+            <div class="layui-input-inline">
+                <input type="hidden" id="pop_parentId" name="parentId" placeholder="父编号" autocomplete="off"
+                    class="layui-input">
+            </div>
         </div>
 
         <!--姓名和登记时间-->
@@ -39,8 +43,13 @@
         <!--单位名称-->
         <div class="layui-form-item">
             <label class="layui-form-label"><span style="color: red;">*</span>单位名称</label>
-            <div class="layui-input-inline" style="width:500px;">
+            <div class="layui-input-inline"">
                 <input type="text" id="pop_unitName" name="unitName" lay-verify="required" placeholder="请输入单位名称"
+                    autocomplete="off" class="layui-input">
+            </div>
+            <label class="layui-form-label"><span style="color: red;">*</span>管理员标识</label>
+            <div class="layui-input-inline"">
+                <input type="text" id="pop_type" name="type" lay-verify="required" placeholder="请输入单位名称"
                     autocomplete="off" class="layui-input">
             </div>
         </div>
@@ -70,14 +79,20 @@
             //2.赋初值(普通字段)
             if (jlbh != null && jlbh != "") {
                 $('#pop_jlbh').val(sParam.jlbh);
+                $('#pop_parentId').val(sParam.parentId);
                 $('#pop_name').val(sParam.name);
                 $('#pop_createTime').val(sParam.createTime);
                 $('#pop_username').val(sParam.username);
                 $('#pop_password').val(sParam.password);
                 $('#pop_unitName').val(sParam.unitName);
+                $('#pop_type').val(sParam.type);
             } else {
                 var myDate = new Date();
-                $('#pop_createTime').val(myDate.toLocaleDateString());
+                $('#pop_createTime').val(new Date().Format('yyyy-MM-dd'));
+                $('#pop_parentId').val('1');
+                $('#pop_password').val('111111');
+                $('#pop_unitName').val('众华房产');
+                $('#pop_type').val('0');
             }
         })
     }

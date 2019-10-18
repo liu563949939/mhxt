@@ -10,6 +10,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import javax.naming.event.ObjectChangeListener;
+import java.util.HashMap;
 import java.util.Map;
 
 @Controller
@@ -39,5 +41,18 @@ public class CustomerController {
     public String del(@RequestBody CustomerEntity entity){
         customerService.del(entity);
         return ResponseUtil.writer("0","success");
+    }
+
+    //4.判断是否已经录入过(根据小区名称+房号判断)
+    @RequestMapping(value = "/isExist",method = {RequestMethod.GET,RequestMethod.POST})
+    public String isExist(@RequestBody CustomerEntity entity){
+        Boolean i = customerService.isExist(entity);
+        Map<String,Object> obj = new HashMap<String,Object>();
+        if(i){
+            obj.put("isExist",true);
+        }else{
+            obj.put("isExist",false);
+        }
+        return ResponseUtil.writer("0","success",obj);
     }
 }

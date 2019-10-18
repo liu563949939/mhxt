@@ -21,6 +21,10 @@ public class CustomerEntity extends PageEntity {
     private String card ;
     /** 房东电话 */
     private String phone ;
+    /** 小区名称 */
+    private String cellName;
+    /** 房号 */
+    private String houseNum;
     /** 房屋地址 */
     private String address ;
     /** 房屋面积 */
@@ -28,7 +32,7 @@ public class CustomerEntity extends PageEntity {
     /** 房屋租售状态 */
     private String saleStatus ;
     /** 房屋价格 */
-    private String price ;
+    private String price;
     /** 房屋厅室 */
     private Integer room ;
     /** 房屋装修状态 */
@@ -86,6 +90,14 @@ public class CustomerEntity extends PageEntity {
         this.address = address;
     }
 
+    public String getArea() {
+        return area;
+    }
+
+    public void setArea(String area) {
+        this.area = area;
+    }
+
     public String getSaleStatus() {
         return saleStatus;
     }
@@ -94,12 +106,12 @@ public class CustomerEntity extends PageEntity {
         this.saleStatus = saleStatus;
     }
 
-    public String getDecorateStatus() {
-        return decorateStatus;
+    public String getPrice() {
+        return price;
     }
 
-    public void setDecorateStatus(String decorateStatus) {
-        this.decorateStatus = decorateStatus;
+    public void setPrice(String price) {
+        this.price = price;
     }
 
     public Integer getRoom() {
@@ -108,6 +120,14 @@ public class CustomerEntity extends PageEntity {
 
     public void setRoom(Integer room) {
         this.room = room;
+    }
+
+    public String getDecorateStatus() {
+        return decorateStatus;
+    }
+
+    public void setDecorateStatus(String decorateStatus) {
+        this.decorateStatus = decorateStatus;
     }
 
     public Integer getFloor() {
@@ -158,11 +178,19 @@ public class CustomerEntity extends PageEntity {
         this.createUser = createUser;
     }
 
-    public String getArea() {
-        return area;
+    public String getCellName() {
+        return cellName;
     }
 
-    public void setArea(String area) {
-        this.area = area;
+    public void setCellName(String cellName) {
+        this.cellName = cellName;
+    }
+
+    public String getHouseNum() {
+        return houseNum;
+    }
+
+    public void setHouseNum(String houseNum) {
+        this.houseNum = houseNum;
     }
 }

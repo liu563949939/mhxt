@@ -3,7 +3,8 @@
         <!--jlbh(隐藏)-->
         <div class="layui-form-item">
             <div class="layui-input-inline">
-                <input type="hidden" id="pop_jlbh" name="jlbh" placeholder="记录编号" autocomplete="off" class="layui-input">
+                <input type="hidden" id="pop_jlbh" name="jlbh" placeholder="记录编号" autocomplete="off"
+                    class="layui-input">
             </div>
             <div class="layui-input-inline">
                 <input type="hidden" id="pop_parentId" name="parentId" placeholder="父编号" autocomplete="off"
@@ -15,13 +16,13 @@
         <div class="layui-form-item">
             <label class="layui-form-label"><span style="color: red;">*</span>角色名称</label>
             <div class="layui-input-inline">
-                <input type="text" id="pop_name" name="name" lay-verify="required" placeholder="请输入角色名称" autocomplete="off"
-                    class="layui-input">
+                <input type="text" id="pop_name" name="name" lay-verify="required" placeholder="请输入角色名称"
+                    autocomplete="off" class="layui-input">
             </div>
             <label class="layui-form-label"><span style="color: red;">*</span>登记时间</label>
             <div class="layui-input-inline">
                 <input type="text" id="pop_createTime" name="createTime" lay-verify="required" placeholder="请输入登记时间"
-                    autocomplete="off" class="layui-input">
+                    autocomplete="off" class="layui-input" readonly>
             </div>
         </div>
 
@@ -31,6 +32,7 @@
             <input type="button" lay-submit lay-filter="form-submit-unit" value="确认" class="layui-btn"
                 style="float:right;margin-right: 10px; ">
         </div>
+
     </div>
 </div>
 
@@ -40,17 +42,27 @@
 
 <script>
     layui.data.done = function (d) {
-        var sParam = d.params;
+        var sParam = d.params,
+            jlbh = sParam.jlbh;
+
         layui.use(['global', 'form'], function () {
             var $ = layui.jquery,
                 form = layui.form,
                 global = layui.global;
 
             //2.赋初值(普通字段)
-            $('#pop_jlbh').val(sParam.jlbh);
-            $('#pop_parentId').val(sParam.parentId);
-            $('#pop_name').val(sParam.name);
-            $('#pop_createTime').val(sParam.createTime);
+            if (jlbh != null && jlbh != "") {
+                $('#pop_jlbh').val(sParam.jlbh);
+                $('#pop_parentId').val(sParam.parentId);
+                $('#pop_name').val(sParam.name);
+                $('#pop_createTime').val(sParam.createTime);
+            } else {
+                $('#pop_parentId').val(sParam.parentId);
+                $('#pop_createTime').val(new Date().Format("yyyy-MM-dd"));
+            }
+
+
+
         })
     }
 </script>

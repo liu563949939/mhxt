@@ -28,6 +28,10 @@ public class UserRolePoService {
             sConditionCount.append(" and roleId = '" + roleEntity.getJlbh() + "'");
         }
 
+        //去掉用户信息根用户
+        sCondition.append(" and parentId <> '0'");
+        sConditionCount.append(" and parentId <> '0'");
+
         Integer iStart = (roleEntity.getPage()-1)*roleEntity.getLimit() + 1; //开始
         Integer iEnd = roleEntity.getPage() * roleEntity.getLimit(); //结束
 

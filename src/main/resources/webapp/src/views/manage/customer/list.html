@@ -14,23 +14,39 @@
             <div class="layui-form layui-card-header layuiadmin-card-header-auto" lay-filter="query-customerTable"
                 style="padding-top:20px;margin-top:10px;">
                 <div class="layui-form-item" id="query-customerTable">
-                    <!--租售状态-->
-                    <label class="layui-form-label" style="width:60px;padding:9px 10px;">租售状态</label>
+                    <!--房屋状态-->
+                    <label class="layui-form-label" style="width:60px;padding:9px 10px;">房屋状态</label>
                     <div class="layui-input-inline">
-                        <select id='saleStatus' name="saleStatus" lay-verify="">
+                        <select id='status' name="status">
                         </select>
                     </div>
                     <!--装修状态-->
                     <label class="layui-form-label" style="width:60px;padding:9px 10px;">装修状态</label>
                     <div class="layui-input-inline">
-                        <select id='decorateStatus' name="decorateStatus" lay-verify="">
+                        <select id='decorateStatus' name="decorateStatus">
                         </select>
                     </div>
-                    <!--房屋状态-->
-                    <label class="layui-form-label" style="width:60px;padding:9px 10px;">房屋状态</label>
+                    <!--登记人-->
+                    <label class="layui-form-label" style="width:60px;padding:9px 10px;">登记人</label>
                     <div class="layui-input-inline">
-                        <select id='status' name="status" lay-verify="">
-                        </select>
+                        <input type="text" class="layui-input" name='createUser'>
+                    </div>
+                    <!--登记时间-->
+                    <label class="layui-form-label" style="width:60px;padding:9px 10px;">登记时间</label>
+                    <div class="layui-input-inline">
+                        <input type="text" class="layui-input" id="createTime" name='createTime'>
+                    </div>
+                </div>
+                <div class="layui-form-item">
+                    <!--小区名称-->
+                    <label class="layui-form-label" style="width:60px;padding:9px 10px;">小区名称</label>
+                    <div class="layui-input-inline">
+                        <input type="text" class="layui-input" name='cellName'>
+                    </div>
+                    <!--房号-->
+                    <label class="layui-form-label" style="width:60px;padding:9px 10px;">房号</label>
+                    <div class="layui-input-inline">
+                        <input type="text" class="layui-input" name='houseNum'>
                     </div>
                     <!--楼层-->
                     <label class="layui-form-label" style="width:60px;padding:9px 10px;">楼层</label>
@@ -70,22 +86,27 @@
     <!--phone-->
     <script type="text/html" id="phoneTpl">
         {{#  if(d.phone != null && d.phone != ""){ }}
-          <a class="layui-btn layui-btn-xs layui-btn-radius layui-btn-danger" lay-event="viewPhone" style="color: #FFFFFF;">查看</a>
+        <a class="layui-btn layui-btn-xs layui-btn-radius layui-btn-danger" lay-event="viewPhone"
+            style="color: #FFFFFF;">查看</a>
         {{#  } else { }}
         <a style="color: #DC143C;">无</a>
         {{#  } }}
-      </script>
-      <!--address-->
-      <script type="text/html" id="addressTpl">
-        {{#  if(d.address != null && d.address != ""){ }}
-          <a class="layui-btn layui-btn-xs layui-btn-radius layui-btn-danger" lay-event="viewAddress" style="color: #FFFFFF;">查看</a>
+    </script>
+    <!--houseNum-->
+    <script type="text/html" id="houseNumTpl">
+        {{#  if(d.houseNum != null && d.houseNum != ""){ }}
+        <a class="layui-btn layui-btn-xs layui-btn-radius layui-btn-danger" lay-event="viewHouseNum"
+            style="color: #FFFFFF;">查看</a>
         {{#  } else { }}
         <a style="color: #DC143C;">无</a>
         {{#  } }}
-      </script>
+    </script>
 
     <script src="/assets/layui.js"></script>
     <script>
+        var x = function () {
+            alert('22')
+        }
         layui.extend({
             core: '{/}/assets/core/index', //核心模块
             exd: '{/}/assets/extends/extend' //扩展模块
@@ -101,6 +122,9 @@
 
             //***1.变量定义***
             var url = config.datamanage.url; //后端请求地址
+            var localTest = layui.sessionData('login'); //获取表
+            var type = localTest.userInfo[4].type; //管理员标识
+
 
             //***2.方法定义***
             var active = {
@@ -115,8 +139,10 @@
                         //(2)异步请求
                         url: url + 'customer/query',
                         method: 'post',
-                        contentType: "application/json",  //发送到服务单的编码
-                        where: {},
+                        contentType: "application/json", //发送到服务单的编码
+                        where: {
+                            modifyTime: type
+                        },
                         page: true,
                         limit: 10,
                         request: {
@@ -126,28 +152,86 @@
                         parseData: function (res) {
                             return {
                                 code: res.code,
-                                msg: res.message,
+                                msg: res.msg,
                                 count: res.count,
                                 data: res.data
                             }
                         },
                         //(3)表头设置
-                        cols: [[
-                            { type: 'checkbox' },
-                            { field: 'jlbh', title: '记录编号', hide: true },
-                            { field: 'name', title: '姓名' },
-                            { field: 'phone', title: '电话', templet: '#phoneTpl' },
-                            { field: 'address', title: '地址' , templet: '#addressTpl' },
-                            { field: 'area', title: '面积' },
-                            { field: 'saleStatus', title: '租售状态', templet: '<div> {{# var fn = ' + dictpl.render('租售状态') + ' }} {{ fn(d.saleStatus) }} </div>' },
-                            { field: 'price', title: '价格' },
-                            { field: 'room', title: '厅室' },
-                            { field: 'decorateStatus', title: '装修状态', templet: '<div> {{# var fn = ' + dictpl.render('装修状态') + ' }} {{ fn(d.decorateStatus) }} </div>' },
-                            { field: 'floor', title: '楼层' },
-                            { field: 'status', title: '状态', templet: '<div> {{# var fn = ' + dictpl.render('状态') + ' }} {{ fn(d.status) }} </div>' },
-                            { field: 'createTime', title: '录入时间' },
-                            { title: '操作', toolbar: '#barCustomer' }
-                        ]],
+                        cols: [
+                            [{
+                                type: 'checkbox'
+                            },
+                            {
+                                field: 'jlbh',
+                                title: '记录编号',
+                                hide: true
+                            },
+                            {
+                                field: 'name',
+                                title: '姓名'
+                            },
+                            {
+                                field: 'phone',
+                                title: '电话',
+                                templet: '#phoneTpl'
+                            },
+                            {
+                                field: 'cellName',
+                                title: '小区名称'
+                            },
+                            {
+                                field: 'houseNum',
+                                title: '房号',
+                                templet: '#houseNumTpl'
+                            },
+                            {
+                                field: 'area',
+                                title: '面积',
+                                sort: true
+                            },
+                            {
+                                field: 'status',
+                                title: '状态',
+                                templet: '<div> {{# var fn = ' + dictpl.render('状态') +
+                                    ' }} {{ fn(d.status) }} </div>'
+                            },
+                            {
+                                field: 'price',
+                                title: '价格',
+                                sort: true
+                            },
+                            {
+                                field: 'room',
+                                title: '厅室',
+                                sort: true
+                            },
+                            {
+                                field: 'decorateStatus',
+                                title: '装修状态',
+                                templet: '<div> {{# var fn = ' + dictpl.render('装修状态') +
+                                    ' }} {{ fn(d.decorateStatus) }} </div>'
+                            },
+                            {
+                                field: 'floor',
+                                title: '楼层',
+                                sort: true
+                            },
+                            {
+                                field: 'createUser',
+                                title: '登记人'
+                            },
+                            {
+                                field: 'createTime',
+                                title: '录入时间',
+                                sort: true
+                            },
+                            {
+                                title: '操作',
+                                toolbar: '#barCustomer'
+                            }
+                            ]
+                        ],
                     })
                 },
 
@@ -181,7 +265,11 @@
 
 
             //******3.初始化******
-            global.pickDic({saleStatus:'租售状态',decorateStatus:'装修状态',status:'状态'}); //字典初始化
+            global.pickDic({
+                saleStatus: '租售状态',
+                decorateStatus: '装修状态',
+                status: '状态'
+            }); //字典初始化
             active.tableInit(); //表格初始化
 
 
@@ -194,7 +282,14 @@
                 if (sEvent == 'edit') {
                     active.pop(obj.data);
                 } else if (sEvent == 'del') {
-                    //删除提示
+                    //删除
+                    //非管理员不能删除
+                    if (type != '1') {
+                        layer.alert('您非管理员，无权限删除！', {
+                            icon: 2
+                        });
+                        return
+                    }
                     layer.open({
                         content: '您确定删除此纪录吗？',
                         btn: ['确定', '取消'],
@@ -202,7 +297,9 @@
                             var sparam = {};
                             sparam.url = 'customer/del',
                                 sparam.method = 'post',
-                                sparam.entity = { jlbh: jlbh },
+                                sparam.entity = {
+                                    jlbh: jlbh
+                                },
                                 sparam.callback = function () {
                                     layer.close(index);
                                     active.tableRelaod({});
@@ -210,10 +307,14 @@
                             global.commonDel(sparam);
                         }
                     })
-                } else if(sEvent == 'viewPhone'){
-                    layer.alert(obj.data.phone, {icon: 4});
-                } else if(sEvent == 'viewAddress'){
-                    layer.alert(obj.data.address, {icon: 4});
+                } else if (sEvent == 'viewPhone') {
+                    layer.alert(obj.data.phone, {
+                        icon: 4
+                    });
+                } else if (sEvent == 'viewHouseNum') {
+                    layer.alert(obj.data.houseNum, {
+                        icon: 4
+                    });
                 }
             })
 
@@ -222,13 +323,14 @@
                 switch (obj.event) {
                     case 'insert':
                         active.pop({});
-                        active.tableRelaod({});
                 };
             })
 
             //3.查询
             form.on('submit(query)', function (data) {
                 debugger
+                // var sCondition = data.field;
+                // sCondition.modifyTime = type; //用来判断是否未管理员
                 active.tableRelaod(data.field);
             })
 

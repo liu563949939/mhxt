@@ -59,12 +59,14 @@
             sParam.entity = {};
             sParam.entity.moduleId = param[i].nodeId;
             sParam.entity.roleId = roleId;
+            sParam.entity.createTime = new Date().Format('yyyy-MM-dd');
             global.commonAdd(sParam);
           }
           //关闭弹窗
           layer.closeAll();
+          layui.element.tabChange('roleTab', 'roleModule'); //分页切换
         }
-
+        
       }
 
 
