@@ -42,6 +42,7 @@ public class CustomerService {
         String decorateStatus = entity.getDecorateStatus(); //装修状态
         String status = entity.getStatus(); //房屋状态
         String createTime = entity.getCreateTime(); //创建时间
+        String phone = entity.getPhone(); //房主电话
         String cellName = entity.getCellName(); //小区名称
         String houseNum = entity.getHouseNum(); //房号
         Integer floor = entity.getFloor(); //楼层
@@ -67,6 +68,11 @@ public class CustomerService {
             sCondition.append(" and createTime like '" + createTime + "%'");
             sConditionCount.append(" and createTime like '" + createTime + "%'");
         }
+        //房主电话
+        if(phone != null && !"".equals(phone)){
+            sCondition.append(" and phone like '" + phone + "%'");
+            sConditionCount.append(" and phone like '" + phone + "%'");
+        }
         //小区名称
         if(cellName != null && !"".equals(cellName)){
             sCondition.append(" and cellName like '%" + cellName + "%'");
@@ -87,6 +93,9 @@ public class CustomerService {
             sCondition.append(" and room = " + room + "");
             sConditionCount.append((" and room = " + room + ""));
         }
+
+        //按照修改时间排序
+        sCondition.append(" order by modifyTime desc");
         Integer iStart = (entity.getPage()-1)*entity.getLimit() + 1; //开始
         Integer iEnd = entity.getPage() * entity.getLimit(); //结束
 

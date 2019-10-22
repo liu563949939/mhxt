@@ -11,15 +11,21 @@
     <div class="layui-fluid">
         <div class="layui-card">
             <!--查询条件-->
-            <div class="layui-form layui-card-header layuiadmin-card-header-auto" lay-filter="query-userdTable" style="padding-top:20px;margin-top:10px;">
+            <div class="layui-form layui-card-header layuiadmin-card-header-auto" lay-filter="query-userdTable"
+                style="padding-top:20px;margin-top:10px;">
                 <div class="layui-form-item" id="query-userdTable">
-                    <label class="layui-form-label" style="width:60px">姓名</label>
+                    <label class="layui-form-label" style="width:60px">类型</label>
+                    <div class="layui-input-inline">
+                        <select name="type" id="type">
+                        </select>
+                    </div>
+                    <label class="layui-form-label" style="width:60px">名称</label>
                     <div class="layui-input-inline">
                         <input type="text" class="layui-input" name='name'>
                     </div>
-                    <label class="layui-form-label" style="width:60px">用户名</label>
+                    <label class="layui-form-label" style="width:60px">内容</label>
                     <div class="layui-input-inline">
-                        <input type="text" class="layui-input" name='username'>
+                        <input type="text" class="layui-input" name='content'>
                     </div>
                     <button lay-submit lay-filter='query' class="layui-btn" style="margin-bottom: 5px">查询</button>
                     <button lay-submit lay-filter='clear' class="layui-btn" style="margin-bottom: 5px">清空</button>
@@ -33,14 +39,14 @@
     </div>
 
     <!--头工具栏-->
-    <script type="text/html" id="toolbarUser">
+    <script type="text/html" id="toolbarKnowLedge">
         <div class="layui-btn-container">
             <button class="layui-btn layui-btn-sm" lay-event="insert">新增</button>
         </div>
     </script>
 
     <!--行工具栏-->
-    <script type="text/html" id="barUser">
+    <script type="text/html" id="barKnowLedge">
         <a class="layui-btn layui-btn-xs" lay-event="edit">编辑</a>
         <a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="del">删除</a>
     </script>
@@ -51,7 +57,7 @@
         layui.extend({
             core: '{/}/assets/core/index', //核心模块
             exd: '{/}/assets/extends/extend' //扩展模块
-        }).use(['layer', 'table', 'jquery', 'form','core', 'exd'], function () {
+        }).use(['layer', 'table', 'jquery', 'form', 'core', 'exd'], function () {
             var $ = layui.jquery,
                 layer = layui.layer,
                 table = layui.table,
@@ -60,6 +66,7 @@
                 config = layui.setter,
                 global = layui.global,
                 dictpl = layui.dictpl;
+
 
             //***1.变量定义***
             var url = config.datamanage.url; //后端请求地址
@@ -72,7 +79,7 @@
                         //(1)基本设置
                         elem: '#table-knowledgeTable',
                         height: 'full-200',
-                        toolbar: '#toolbarUser',
+                        toolbar: '#toolbarKnowLedge',
 
                         //(2)异步请求
                         url: url + 'knowledge/query',
@@ -88,7 +95,7 @@
                         parseData: function (res) {
                             return {
                                 code: res.code,
-                                msg: res.message,
+                                msg: res.msg,
                                 count: res.count,
                                 data: res.data
                             }
@@ -98,17 +105,16 @@
                             { type: 'checkbox' },
                             { field: 'jlbh', title: '记录编号', hide: true },
                             // { field: 'type', title: '类别', templet: '<div> {{# var fn = ' + dictpl.render('资料类型') + ' }} {{ fn(d.type) }} </div>' },
-                            { field: 'type', title: '类型' },
+                            { field: 'type', title: '类型', templet: '<div> {{# var fn = ' + dictpl.render('资料类别') + ' }} 	{{ fn(d.type) }} </div>' },
                             { field: 'name', title: '名称' },
                             { field: 'createTime', title: '登记时间' },
-                            { title: '操作', toolbar: '#barUser' }
+                            { title: '操作', toolbar: '#barKnowLedge' }
                         ]],
                     })
                 },
 
                 //2.表格重载
                 tableRelaod: function (sParam) {
-                    debugger
                     table.reload('table-knowledgeTable', {
                         where: sParam,
                         page: {
@@ -117,17 +123,20 @@
                     })
                 },
 
-                //4.登记修改
+                //3.登记修改
                 pop: function (data) {
                     var sparam = {};
-                    sparam.title = '用户登记'; //标题
-                    sparam.width = '1200px'; //宽度
-                    sparam.height = '680px'; //高度
-                    sparam.id = 'user'; //内容div的id
+                    sparam.title = '资料登记'; //标题
+                    sparam.width = '1000px'; //宽度
+                    sparam.height = '580px'; //高度
+                    sparam.id = 'knowledge'; //内容div的id
                     sparam.view = '../view'; //加载的页面路径
-                    sparam.url = 'user/save';
+                    sparam.url = 'knowledge/save';
                     sparam.data = data; //传入弹出层的参数
                     sparam.button = 'form-submit-unit'; //按钮
+                    sparam.callback = function () {
+                        active.tableRelaod({});
+                    }
                     global.pop(sparam);
                 }
             }
@@ -135,46 +144,45 @@
 
             //******3.初始化******
             active.tableInit(); //表格初始化
+            global.pickDic({ type: '资料类别' }); //字典字段初始化
 
 
             //******4.事件监听******
-            //1.监听行工具栏
+            //1.监听头工具栏
+            table.on('toolbar(table-knowledgeTable)', function (obj) {
+                switch (obj.event) {
+                    case 'insert':
+                        active.pop({});
+                };
+            })
+
+            //2.监听行工具栏
             table.on('tool(table-knowledgeTable)', function (obj) {
                 var sEvent = obj.event;
                 if (sEvent == 'edit') {
                     active.pop(obj.data);
                 } else if (sEvent == 'del') {
-                    debugger
-                    var sparam = {};
-                    sparam.url = 'user/del',
-                        sparam.method = 'post',
-                        sparam.entity = { jlbh: obj.data.jlbh },
-                        //定义删除回调函数
-                        sparam.callback = function () {
-                            debugger
-                            layer.closeAll();
-                            active.tableRelaod({});
-                        }
-                    //删除提示
                     layer.open({
-                        content: '您确定删除此纪录吗？',
+                        content: '确定要删除吗？',
                         btn: ['确定', '取消'],
+                        icon: 3,
+                        title: '操作提示',
                         yes: function (index, layero) {
+                            var sparam = {};
+                            sparam.url = 'knowledge/del';
+                            sparam.method = 'post';
+                            sparam.entity = { jlbh: obj.data.jlbh };
+                            sparam.callback = function () {
+                                active.tableRelaod({});
+                                layer.close(index);
+                            }
                             global.commonDel(sparam);
                         }
                     })
                 }
             })
 
-            //2.监听头工具栏
-            table.on('toolbar(table-knowledgeTable)', function (obj) {
-                switch (obj.event) {
-                    case 'insert':
-                        active.pop({});
-                        debugger
-                        active.tableRelaod({});
-                };
-            })
+
 
             //3.查询
             form.on('submit(query)', function (data) {

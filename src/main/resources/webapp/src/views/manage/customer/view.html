@@ -8,7 +8,7 @@
             </div>
         </div>
 
-        <!--姓名和身份证号-->
+        <!--姓名、身份证号、电话-->
         <div class="layui-form-item">
             <label class="layui-form-label">姓名</label>
             <div class="layui-input-inline">
@@ -19,24 +19,20 @@
                 <input type="text" id="pop_card" name="card" placeholder="请输入身份证号" autocomplete="off"
                     class="layui-input">
             </div>
-        </div>
-
-        <!--电话和面积-->
-        <div class="layui-form-item">
             <label class="layui-form-label"><span style="color: red;">*</span>电话</label>
             <div class="layui-input-inline">
                 <input type="text" id="pop_phone" name="phone" lay-verify="required" placeholder="请输入电话"
                     autocomplete="off" class="layui-input">
             </div>
+        </div>
+
+        <!--面积、小区名称、房号-->
+        <div class="layui-form-item">
             <label class="layui-form-label"><span style="color: red;">*</span>面积</label>
             <div class="layui-input-inline">
                 <input type="text" id="pop_area" name="area" lay-verify="required" placeholder="请输入面积"
                     autocomplete="off" class="layui-input">
             </div>
-        </div>
-
-        <!--小区名称和房号-->
-        <div class="layui-form-item">
             <label class="layui-form-label"><span style="color: red;">*</span>小区名称</label>
             <div class="layui-input-inline">
                 <input type="text" id="pop_cellName" name="cellName" lay-verify="required" placeholder="请输入小区名称"
@@ -49,7 +45,7 @@
             </div>
         </div>
 
-        <!--租售状态和房屋价格-->
+        <!--租售状态、房屋价格、厅室-->
         <div class="layui-form-item">
             <label class="layui-form-label">租售状态</label>
             <div class="layui-input-inline">
@@ -61,24 +57,20 @@
                 <input type="text" id="pop_price" name="price" placeholder="请输入价格" autocomplete="off"
                     class="layui-input">
             </div>
-        </div>
-
-        <!--厅室和装修状态-->
-        <div class="layui-form-item">
             <label class="layui-form-label">厅室</label>
             <div class="layui-input-inline">
                 <input type="text" id="pop_room" name="room" lay-verify="number" placeholder="请输入厅室" autocomplete="off"
                     class="layui-input">
             </div>
+        </div>
+
+        <!--装修状态、楼层、房屋状态-->
+        <div class="layui-form-item">
             <label class="layui-form-label">装修状态</label>
             <div class="layui-input-inline">
                 <select name="decorateStatus" id="pop_decorateStatus">
                 </select>
             </div>
-        </div>
-
-        <!--楼层和房屋状态-->
-        <div class="layui-form-item">
             <label class="layui-form-label">楼层</label>
             <div class="layui-input-inline">
                 <input type="text" id="pop_floor" name="floor" lay-verify="number" placeholder="请输入楼层"
@@ -94,12 +86,12 @@
         <!--房东备注-->
         <div class="layui-form-item">
             <label class="layui-form-label">备注</label>
-            <div class="layui-input-inline" style="width:500px;">
+            <div class="layui-input-inline" style="width:810px;">
                 <textarea id="pop_memo" name="memo" placeholder="请输入备注" class="layui-textarea"></textarea>
             </div>
         </div>
 
-        <!--登记时间和登记人员-->
+        <!--登记时间、登记人员、修改时间-->
         <div class="layui-form-item">
             <label class="layui-form-label">登记时间</label>
             <div class="layui-input-inline">
@@ -109,6 +101,11 @@
             <label class="layui-form-label">登记人员</label>
             <div class="layui-input-inline">
                 <input type="text" id="pop_createUser" name="createUser" placeholder="请输入登记人员" autocomplete="off"
+                    class="layui-input" readonly>
+            </div>
+            <label class="layui-form-label">修改时间</label>
+            <div class="layui-input-inline">
+                <input type="text" id="pop_modifyTime" name="modifyTime" placeholder="请输入修改时间" autocomplete="off"
                     class="layui-input" readonly>
             </div>
         </div>
@@ -128,7 +125,6 @@
 
 <script>
     layui.data.done = function (d) {
-        debugger
         var sParam = d.params;
         layui.use(['global', 'form'], function () {
             var $ = layui.jquery,
@@ -150,12 +146,16 @@
             var active = {
                 //1.保存客户信息
                 saveCustomer: function (entity) {
+                    //修改时间赋值
+                    debugger
+                    entity.modifyTime = new Date().Format("yyyy-MM-dd hh:mm:ss");
                     var param = {};
                     param.url = 'customer/save',
                         param.method = 'post',
                         param.entity = entity,
                         param.callback = function () {
                             layer.closeAll();
+                            sParam.callback();
                         }
                     global.commonAdd(param);
                 }
@@ -168,8 +168,8 @@
                 $('#pop_card').val(sParam.card); //房东身份证号
                 $('#pop_phone').val(sParam.phone); //房东电话
                 $('#pop_area').val(sParam.area); //房屋面积
-                $('#pop_cellName').val(sParam.cellName); //房屋地址
-                $('#pop_houseNum').val(sParam.houseNum); //房屋地址
+                $('#pop_cellName').val(sParam.cellName); //小区名称
+                $('#pop_houseNum').val(sParam.houseNum); //房号
                 $('#pop_saleStatus').val(sParam.saleStatus); //房屋租售状态
                 $('#pop_price').val(sParam.price); //房屋价格
                 $('#pop_room').val(sParam.room); //房屋厅室
@@ -183,11 +183,15 @@
                     $('#pop_createTime').val(sParam.createTime);
                 }
                 $('#pop_createUser').val(sParam.createUser); //登记人员
+                $('#pop_modifyTime').val(sParam.modifyTime); //修改时间
+                //只读字段
+                $('#pop_cellName').attr('readonly',true);
+                $('#pop_houseNum').attr('readonly',true);
             } else {
                 $('#pop_room').val(0);
                 $('#pop_floor').val(0);
                 $('#pop_createTime').val(new Date().Format('yyyy-MM-dd')); //房东登记时间
-                $('#pop_createUser').val(username); //登记人员  
+                $('#pop_createUser').val(username); //登记人员
             }
 
             //4.事件监听

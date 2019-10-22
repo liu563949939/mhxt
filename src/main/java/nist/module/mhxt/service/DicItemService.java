@@ -74,6 +74,7 @@ public class DicItemService {
         if(dicName != null && !"".equals(dicName)){
             sCondition.append(" and name = '" + dicName + "'");
         }
+        sCondition.append(" order by code");
         //2.语句执行
         Query query = entityManager.createNativeQuery(sCondition.toString(),DicItemEntity.class);
         List<DicItemEntity> dataList = query.getResultList();

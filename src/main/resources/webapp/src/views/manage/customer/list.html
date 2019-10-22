@@ -31,10 +31,10 @@
                     <div class="layui-input-inline">
                         <input type="text" class="layui-input" name='createUser'>
                     </div>
-                    <!--登记时间-->
-                    <label class="layui-form-label" style="width:60px;padding:9px 10px;">登记时间</label>
+                    <!--房主电话-->
+                    <label class="layui-form-label" style="width:60px;padding:9px 10px;">房主电话</label>
                     <div class="layui-input-inline">
-                        <input type="text" class="layui-input" id="createTime" name='createTime'>
+                        <input type="text" class="layui-input" id="phone" name='phone'>
                     </div>
                 </div>
                 <div class="layui-form-item">
@@ -104,9 +104,6 @@
 
     <script src="/assets/layui.js"></script>
     <script>
-        var x = function () {
-            alert('22')
-        }
         layui.extend({
             core: '{/}/assets/core/index', //核心模块
             exd: '{/}/assets/extends/extend' //扩展模块
@@ -123,8 +120,8 @@
             //***1.变量定义***
             var url = config.datamanage.url; //后端请求地址
             var localTest = layui.sessionData('login'); //获取表
-            var type = localTest.userInfo[4].type; //管理员标识
-
+            var type = localTest.userInfo[4].type, //管理员标识
+                name = localTest.userInfo[1].name; //当前 用户姓名
 
             //***2.方法定义***
             var active = {
@@ -169,11 +166,13 @@
                             },
                             {
                                 field: 'name',
-                                title: '姓名'
+                                title: '姓名',
+                                width: 100
                             },
                             {
                                 field: 'phone',
                                 title: '电话',
+                                width: 80,
                                 templet: '#phoneTpl'
                             },
                             {
@@ -183,51 +182,60 @@
                             {
                                 field: 'houseNum',
                                 title: '房号',
+                                width: 80,
                                 templet: '#houseNumTpl'
                             },
                             {
                                 field: 'area',
                                 title: '面积',
+                                width: 80,
                                 sort: true
                             },
                             {
                                 field: 'status',
                                 title: '状态',
+                                width: 80,
                                 templet: '<div> {{# var fn = ' + dictpl.render('状态') +
                                     ' }} {{ fn(d.status) }} </div>'
                             },
                             {
                                 field: 'price',
-                                title: '价格',
+                                title: '价格(万)',
+                                width: 100,
                                 sort: true
                             },
                             {
                                 field: 'room',
                                 title: '厅室',
+                                width: 80,
                                 sort: true
                             },
                             {
                                 field: 'decorateStatus',
-                                title: '装修状态',
+                                title: '装修',
+                                width: 80,
                                 templet: '<div> {{# var fn = ' + dictpl.render('装修状态') +
                                     ' }} {{ fn(d.decorateStatus) }} </div>'
                             },
                             {
                                 field: 'floor',
                                 title: '楼层',
+                                width: 80,
                                 sort: true
                             },
                             {
                                 field: 'createUser',
+                                width: 100,
                                 title: '登记人'
                             },
                             {
-                                field: 'createTime',
-                                title: '录入时间',
+                                field: 'modifyTime',
+                                title: '修改时间',
                                 sort: true
                             },
                             {
                                 title: '操作',
+                                width: 120,
                                 toolbar: '#barCustomer'
                             }
                             ]
@@ -237,6 +245,7 @@
 
                 //2.表格重载
                 tableRelaod: function (sParam) {
+                    debugger
                     table.reload('table-customerTable', {
                         where: sParam,
                         page: {
@@ -245,12 +254,12 @@
                     })
                 },
 
-                //4.登记修改
+                //3.登记修改
                 pop: function (data) {
                     var sparam = {};
                     sparam.title = '房屋登记'; //标题
-                    sparam.width = '720px'; //宽度
-                    sparam.height = '680px'; //高度
+                    sparam.width = '1000px'; //宽度
+                    sparam.height = '620px'; //高度
                     sparam.id = 'customer'; //内容div的id
                     sparam.view = '../view'; //加载的页面路径
                     sparam.url = 'customer/save';
@@ -276,13 +285,22 @@
             //******4.事件监听******
             //1.监听行工具栏
             table.on('tool(table-customerTable)', function (obj) {
-                debugger
                 var jlbh = obj.data.jlbh;
                 var sEvent = obj.event;
                 if (sEvent == 'edit') {
+                    debugger
+                    //非管理员只能编辑自己登记的信息
+                    if (type != '1') {
+                        var createUser = obj.data.createUser; //信息登记人
+                        if (name != createUser) {
+                            layer.alert('此信息非您本人登记，您无权修改！', {
+                                icon: 2
+                            });
+                            return
+                        }
+                    }
                     active.pop(obj.data);
                 } else if (sEvent == 'del') {
-                    //删除
                     //非管理员不能删除
                     if (type != '1') {
                         layer.alert('您非管理员，无权限删除！', {

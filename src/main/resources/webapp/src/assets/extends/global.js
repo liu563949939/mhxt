@@ -25,11 +25,6 @@ layui.define(['layer', 'jquery', 'table', 'setter'], function (exports) {
                 data: JSON.stringify(param.condition), //讲js对象序列化
                 //3.回调函数
                 success: function (obj) {
-                    // if (param.type == 'dic') {
-                    //     // debugger
-                    //     param.data = obj.data;
-                    //     param.callback(param);
-                    // }
                     if(typeof(param.callback) == 'function'){
                         param.data = obj.data;
                         param.callback(param);
@@ -182,10 +177,13 @@ layui.define(['layer', 'jquery', 'table', 'setter'], function (exports) {
 
         //***(3)admin弹出层***
         pop: function (param) {
-            debugger
             var id = param.id, //内容div的id
                 url = param.url, //url
                 i = param.data; //传入弹出层的参数(让子窗体绑定数据集)
+                //扩展参数
+                if(id=='customer'){
+                    i.callback = param.callback;
+                }
             admin.popup({
                 title: param.title, //标题
                 area: [param.width, param.height], //宽度和高度
@@ -195,6 +193,7 @@ layui.define(['layer', 'jquery', 'table', 'setter'], function (exports) {
                     layui.view(id).render(param.view, i).done(function () {
                         form.render();
                         form.on('submit(' + param.button + ')', function (data) {
+                            debugger
                             //ajax请求提交数据
                             sparam = {};
                             sparam.url = url;
