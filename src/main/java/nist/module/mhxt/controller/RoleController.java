@@ -1,6 +1,5 @@
 package nist.module.mhxt.controller;
 
-import nist.module.mhxt.entity.ModuleEntity;
 import nist.module.mhxt.entity.RoleEntity;
 import nist.module.mhxt.service.RoleServcie;
 import nist.module.mhxt.util.ResponseUtil;
@@ -13,7 +12,6 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.persistence.EntityManager;
-import javax.persistence.Query;
 import java.util.Map;
 
 @Controller

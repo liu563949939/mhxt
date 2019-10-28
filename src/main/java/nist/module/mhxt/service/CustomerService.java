@@ -27,7 +27,7 @@ public class CustomerService {
     public Map<String, Object> query(CustomerEntity entity){
         Map<String,Object> sFhz = new HashMap<String,Object>();
         //1.条件处理
-        StringBuilder sCondition = new StringBuilder("select rownum as sNum,t.* from t_customer t where 1 = 1");
+        StringBuilder sCondition = new StringBuilder("select t.* from t_customer t where 1 = 1");
         StringBuilder sConditionCount = new StringBuilder("select count(*) from t_customer where 1 = 1");
 
         //管理员判断(管理员可以查看已租掉的房信息)
@@ -99,7 +99,7 @@ public class CustomerService {
         Integer iStart = (entity.getPage()-1)*entity.getLimit() + 1; //开始
         Integer iEnd = entity.getPage() * entity.getLimit(); //结束
 
-        String SQL = "select * From (" + sCondition.toString() + ") where sNum between " + String.valueOf(iStart) + " and " + String.valueOf(iEnd);
+        String SQL = "select * from (select rownum as sNum,v.* From (" + sCondition.toString() + ") v) where sNum between " + String.valueOf(iStart) + " and " + String.valueOf(iEnd);
         String SQLCount = sConditionCount.toString();
 
         Query query = entityManager.createNativeQuery(SQL, CustomerEntity.class);
