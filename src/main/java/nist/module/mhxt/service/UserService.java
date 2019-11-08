@@ -154,6 +154,7 @@ public class UserService {
         if(userId != null && !"".equals(userId)){
             sCondition.append(publicSql);
             sCondition.append(" and parentId = '1'");
+            sCondition.append(" order by serial");
         }else{
             return null;
         }
@@ -177,6 +178,7 @@ public class UserService {
         if(!"".equals(moduleId)){
             sCondition.append(publicSql);
             sCondition.append(" and parentId = '" + moduleId + "'");
+            sCondition.append(" order by serial");
         }
         //2.语句执行
         Query query = entityManager.createNativeQuery(sCondition.toString(),ModuleEntity.class);

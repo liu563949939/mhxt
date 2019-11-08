@@ -20,6 +20,7 @@ public class ModuleEntity extends PageEntity{
     private String url;
     private String createTime;
     private String icon;
+    private Integer serial; //排序号
 
     public String getJlbh() {
         return jlbh;
@@ -67,5 +68,13 @@ public class ModuleEntity extends PageEntity{
 
     public void setIcon(String icon) {
         this.icon = icon;
+    }
+
+    public Integer getSerial() {
+        return serial;
+    }
+
+    public void setSerial(Integer serial) {
+        this.serial = serial;
     }
 }

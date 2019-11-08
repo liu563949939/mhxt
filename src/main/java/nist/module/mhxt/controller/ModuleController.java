@@ -46,6 +46,12 @@ public class ModuleController {
         }
     }
 
+    //1-4.根据jlbh查询子项最大序列号
+    @RequestMapping(value = "/getMaxSerial",method = {RequestMethod.GET,RequestMethod.POST})
+    public String getMaxSerial(@RequestBody ModuleEntity entity){
+        Integer sFhz = moduleService.getSubModuleListById(entity);
+        return ResponseUtil.writer("0","success",sFhz);
+    }
     //2.save方法
     @RequestMapping(value = "/save", method = {RequestMethod.GET, RequestMethod.POST})
     public String save(@RequestBody ModuleEntity moduleEntity){

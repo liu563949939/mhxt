@@ -7,6 +7,7 @@
     <link rel="stylesheet" href="/assets/css/layui.css">
     <link rel="stylesheet" href="/assets/extends/dtree/dtree.css">
     <link rel="stylesheet" href="/assets/extends/dtree/font/dtreefont.css">
+    <link rel="stylesheet" href="/assets/css/extends/common.css";
 </head>
 
 <body>
@@ -33,18 +34,18 @@
                         </div>
                         <!--资源名称和创建时间-->
                         <div class="layui-form-item">
-                            <label class="layui-form-label"><span style="color: red;">*</span>模块ID</label>
-                            <div class="layui-input-inline" style="width:260px;">
+                            <label class="layui-form-label label01"><span style="color: red;">*</span>模块ID</label>
+                            <div class="layui-input-inline">
                                 <input type="text" id="jlbh" name="jlbh" readonly="readonly" placeholder="请输入模块ID"
                                     autocomplete="off" class="layui-input">
                             </div>
-                            <label class="layui-form-label"><span style="color: red;">*</span>模块名称</label>
-                            <div class="layui-input-inline" style="width:260px;">
+                            <label class="layui-form-label label01"><span style="color: red;">*</span>名称</label>
+                            <div class="layui-input-inline">
                                 <input type="text" id="name" name="name" readonly="readonly" placeholder="请输入模块名称"
                                     autocomplete="off" class="layui-input">
                             </div>
-                            <label class="layui-form-label"><span style="color: red;">*</span>模块路径</label>
-                            <div class="layui-input-inline" style="width:260px;">
+                            <label class="layui-form-label label01"><span style="color: red;">*</span>路径</label>
+                            <div class="layui-input-inline">
                                 <input type="text" id="url" name="url" readonly="readonly" placeholder="请输入模块路径"
                                     autocomplete="off" class="layui-input">
                             </div>
@@ -69,8 +70,6 @@
             </div>
         </div>
     </div>
-
-
 
 
     <script src="/assets/layui.js"></script>
@@ -320,6 +319,7 @@
 
             //2-1.添加资源
             form.on("submit(add)", function (data) {
+                debugger
                 var param = {};
                 param.parentId = data.field.jlbh; //父编号
                 active.pop(param); //登记修改
@@ -334,7 +334,6 @@
                 param.condition = {
                     'jlbh': jlbh
                 };
-                param.type = 'dic';
                 param.callback = function (sParam) {
                     //2.修改记录
                     var sjlbh = sParam.data.jlbh;

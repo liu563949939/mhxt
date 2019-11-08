@@ -35,12 +35,17 @@
             </div>
         </div>
 
-        <!--资源图标-->
+        <!--资源图标、排序号-->
         <div class="layui-form-item">
             <label class="layui-form-label"><span style="color: red;">*</span>资源图标</label>
             <div class="layui-input-inline">
                 <input type="text" id="pop_icon" name="icon" placeholder="请输入资源图标" autocomplete="off"
                     class="layui-input">
+            </div>
+            <label class="layui-form-label"><span style="color: red;">*</span>排序号</label>
+            <div class="layui-input-inline">
+                <input type="text" id="pop_serial" name="serial" lay-verify="required"
+                    placeholder="请输入排序号" autocomplete="off" class="layui-input">
             </div>
         </div>
 
@@ -66,7 +71,9 @@
                 global = layui.global,
                 IconFonts = layui.IconFonts;
 
-            var jlbh = sParam.jlbh;
+            var jlbh = sParam.jlbh,
+                parentId = sParam.parentId;
+
             //2.方法定义
             var active = {
                 //1.图标选择器
@@ -81,6 +88,17 @@
                             $('#pop_icon').val(data.icon);
                         }
                     });
+                },
+
+                //2.后的序列号
+                getSerial: function (bh){
+                    var sParam = {};
+                        sParam.url = 'module/getMaxSerial',
+                        sParam.condition = {jlbh: bh},
+                        sParam.callback = function (data) {
+                            $('#pop_serial').val(data.data);
+                        }
+                    global.commonQuery(sParam);
                 }
             }
 
@@ -88,14 +106,17 @@
             //2-1.字段赋值
             if (jlbh != null && jlbh != '') {
                 $('#pop_jlbh').val(sParam.jlbh);
-                $('#pop_parentId').val(sParam.parentId);
+                $('#pop_parentId').val(parentId);
                 $('#pop_name').val(sParam.name);
                 $('#pop_createTime').val(sParam.createTime);
                 $('#pop_url').val(sParam.url);
                 $('#pop_icon').val(sParam.icon);
+                $('#pop_serial').val(sParam.serial);
             }else{
-                $('#pop_parentId').val(sParam.parentId);
+                $('#pop_parentId').val(parentId);
                 $('#pop_createTime').val(new Date().Format('yyyy-MM-dd'));
+                //获得序列号
+                active.getSerial(parentId);
             }
 
 
