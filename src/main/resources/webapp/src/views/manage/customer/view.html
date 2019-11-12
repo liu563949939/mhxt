@@ -2,7 +2,7 @@
     <div class="layui-tab" lay-filter="photo">
         <ul class="layui-tab-title">
             <li class="layui-this">基本信息</li>
-            <li lay-id = 'photo'>照片信息</li>
+            <li lay-id='photo'>照片信息</li>
         </ul>
         <div class="layui-tab-content">
             <div class="layui-tab-item layui-show">
@@ -171,11 +171,13 @@
 
             //用户session
             var localTest = layui.sessionData('login'); //获取表
-            var username = localTest.userInfo[1].name; //获取属性
+            var name = localTest.userInfo[1].name, //获取用户名
+                type = localTest.userInfo[4].type; //获取用户类型
 
             //2.方法定义
             var active = {
-                //1.保存客户信息
+                //***分页1(客户信息)***
+                //1-1.保存
                 saveCustomer: function (entity) {
                     //修改时间赋值
                     debugger
@@ -191,7 +193,8 @@
                     global.commonAdd(param);
                 },
 
-                //2.附件信息
+
+                //***分页2(附件信息)***
                 //2-1.表格初始化
                 tableInit_customerPic: function () {
                     table.render({
@@ -274,56 +277,73 @@
                             //请求异常回调
                         }
                     })
+                },
+
+                //***公共方法***
+                //3-1.字段初始化
+                fieldInit: function () {
+                    if (jlbh != null && jlbh != '') {
+                        $('#pop_jlbh').val(sParam.jlbh); //记录编号
+                        $('#pop_name').val(sParam.name); //房东姓名
+                        $('#pop_card').val(sParam.card); //房东身份证号
+                        $('#pop_phone').val(sParam.phone); //房东电话
+                        $('#pop_area').val(sParam.area); //房屋面积
+                        $('#pop_cellName').val(sParam.cellName); //小区名称
+                        $('#pop_houseNum').val(sParam.houseNum); //房号
+                        $('#pop_saleStatus').val(sParam.saleStatus); //房屋租售状态
+                        $('#pop_price').val(sParam.price); //房屋价格
+                        $('#pop_room').val(sParam.room); //房屋厅室
+                        $('#pop_decorateStatus').val(sParam.decorateStatus); //房屋装修状态
+                        $('#pop_floor').val(sParam.floor); //房屋楼层
+                        $('#pop_status').val(sParam.status); //房屋状态
+                        $('#pop_memo').val(sParam.memo); //房东备注
+                        if (typeof (sParam.createTime) == 'undefined') {
+                            $('#pop_createTime').val(new Date().Format('yyyy-MM-dd')); //房东登记时间
+                        } else {
+                            $('#pop_createTime').val(sParam.createTime);
+                        }
+                        $('#pop_createUser').val(sParam.createUser); //登记人员
+                        $('#pop_modifyTime').val(sParam.modifyTime); //修改时间
+                        //只读字段
+                        $('#pop_cellName').attr('readonly', true);
+                        $('#pop_houseNum').attr('readonly', true);
+                    } else {
+                        element.tabDelete('photo', 'photo'); //附件分页隐藏
+                        $('#pop_room').val(0);
+                        $('#pop_floor').val(0);
+                        $('#pop_createTime').val(new Date().Format('yyyy-MM-dd')); //房东登记时间
+                        $('#pop_createUser').val(name); //登记人员
+                    }
                 }
             }
 
             //3.初始化
-            //赋初值(普通字段)
-            if (jlbh != null && jlbh != '') {
-                $('#pop_jlbh').val(sParam.jlbh); //记录编号
-                $('#pop_name').val(sParam.name); //房东姓名
-                $('#pop_card').val(sParam.card); //房东身份证号
-                $('#pop_phone').val(sParam.phone); //房东电话
-                $('#pop_area').val(sParam.area); //房屋面积
-                $('#pop_cellName').val(sParam.cellName); //小区名称
-                $('#pop_houseNum').val(sParam.houseNum); //房号
-                $('#pop_saleStatus').val(sParam.saleStatus); //房屋租售状态
-                $('#pop_price').val(sParam.price); //房屋价格
-                $('#pop_room').val(sParam.room); //房屋厅室
-                $('#pop_decorateStatus').val(sParam.decorateStatus); //房屋装修状态
-                $('#pop_floor').val(sParam.floor); //房屋楼层
-                $('#pop_status').val(sParam.status); //房屋状态
-                $('#pop_memo').val(sParam.memo); //房东备注
-                if (typeof (sParam.createTime) == 'undefined') {
-                    $('#pop_createTime').val(new Date().Format('yyyy-MM-dd')); //房东登记时间
-                } else {
-                    $('#pop_createTime').val(sParam.createTime);
-                }
-                $('#pop_createUser').val(sParam.createUser); //登记人员
-                $('#pop_modifyTime').val(sParam.modifyTime); //修改时间
-                //只读字段
-                $('#pop_cellName').attr('readonly', true);
-                $('#pop_houseNum').attr('readonly', true);
-            } else {
-                $('#pop_room').val(0);
-                $('#pop_floor').val(0);
-                $('#pop_createTime').val(new Date().Format('yyyy-MM-dd')); //房东登记时间
-                $('#pop_createUser').val(username); //登记人员
-            }
-
-            active.tableInit_customerPic(); //表格初始化
+            active.fieldInit(); ////赋初值(普通字段)
+            active.tableInit_customerPic(); //附件表格初始化
             active.uploadInit(); //图片上传
-            if(jlbh == null || jlbh == "") {
-                element.tabDelete('photo', 'photo');
-            }
+
 
             //4.事件监听
             //***分页1***
-            //1.保存
+            //1-1.保存
             form.on('submit(saveCustomerBtn)', function (obj) {
                 var entity = obj.field;
                 if (jlbh != null && jlbh != '') {
-                    active.saveCustomer(entity); //2.提交代码保存
+                    //非管理员不能修改其他人的信息
+                    if (type != '1') {
+                        var createUser = entity.createUser; //信息登记人
+                        if (name != createUser) {
+                            layer.alert('此信息非您本人登记，您无权修改！', {
+                                icon: 2
+                            });
+                            return
+                        } else {
+                            active.saveCustomer(entity); //提交代码保存
+                        }
+                    } else {
+                        active.saveCustomer(entity); //提交代码保存
+                    }
+
                 } else {
                     //1.是否重复录入(根据小区名称+房号判断)
                     var cellName = $('#pop_cellName').val(), //小区名称
@@ -352,7 +372,7 @@
 
 
             //***分页2***
-            //1.删除
+            //2-1.删除
             table.on('tool(table-customerPic)', function (obj) {
                 var event = obj.event,
                     jlbh = obj.data.jlbh, //记录编号

@@ -80,7 +80,6 @@
 
         //3.方法定义
         var active = {
-
             //1.读取菜单
             readMenu: function (data) {
                 var x = '';
@@ -102,10 +101,7 @@
                 }
                 return x;
             }
-
-
         }
-
     })
 
 

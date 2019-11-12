@@ -288,17 +288,6 @@
                 var jlbh = obj.data.jlbh;
                 var sEvent = obj.event;
                 if (sEvent == 'edit') {
-                    debugger
-                    //非管理员只能编辑自己登记的信息
-                    if (type != '1') {
-                        var createUser = obj.data.createUser; //信息登记人
-                        if (name != createUser) {
-                            layer.alert('此信息非您本人登记，您无权修改！', {
-                                icon: 2
-                            });
-                            return
-                        }
-                    }
                     active.pop(obj.data);
                 } else if (sEvent == 'del') {
                     //非管理员不能删除
